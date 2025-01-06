@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:planit/widgets/homepage/dashboard_screen.dart';
 import 'package:planit/widgets/label_text.dart';
 import 'package:planit/widgets/main_button.dart';
 import 'package:planit/widgets/normal_text.dart';
@@ -23,6 +24,11 @@ class _LoginScreenState extends State<LoginScreen> {
   void _onRegister(BuildContext context) {
     Navigator.push(
         context, MaterialPageRoute(builder: (ctx) => RegistrationScreen()));
+  }
+
+    void _onLogin(BuildContext context) {
+    Navigator.push(
+        context, MaterialPageRoute(builder: (ctx) => DashboardScreen()));
   }
 
   @override
@@ -74,7 +80,9 @@ class _LoginScreenState extends State<LoginScreen> {
                     text: 'Log in',
                     backgroundColor: Colors.black,
                     foregroundColor: Colors.white,
-                    onTap: () {}),
+                    onTap: () {
+                      _onLogin(context);
+                    }),
               ),
               SizedBox(
                 height: 10,
