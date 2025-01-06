@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 
 class TextInput extends StatelessWidget {
   const TextInput(
-      {required this.textInputType, required this.hintText, super.key});
+      {this.controller, required this.textInputType, required this.hintText, super.key});
   final String hintText;
   final TextInputType textInputType;
+  final TextEditingController? controller;
 
   @override
   Widget build(BuildContext context) {
@@ -26,6 +27,7 @@ class TextInput extends StatelessWidget {
         ),
       ),
       keyboardType: textInputType,
+      controller: controller,
     );
   }
 }

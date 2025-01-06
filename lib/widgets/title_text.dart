@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class TitleText extends StatelessWidget {
-  const TitleText({required this.text, super.key});
+  const TitleText({this.alignment,required this.text, super.key});
   
   final String text;
+  final TextAlign? alignment;
   
   @override
   Widget build(BuildContext context) {
@@ -15,6 +16,7 @@ class TitleText extends StatelessWidget {
         fontSize: 30,
         fontWeight: FontWeight.bold,
       ),
+      textAlign: alignment,
     );
   }
 }

@@ -98,7 +98,7 @@ class WelcomeScreen extends StatelessWidget {
                     ),
                   )
                 ],
-              )
+              ),
             ],
           ),
         ),
