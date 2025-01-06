@@ -10,7 +10,7 @@ class OtpSquare extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    double size = MediaQuery.of(context).size.width * 0.15;
+    double size = MediaQuery.of(context).size.width * 0.14;
 
     return Container(
       width: size,
