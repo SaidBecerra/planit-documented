@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class NormalText extends StatelessWidget {
-  const NormalText({required this.alignment, required this.text, required,super.key});
+  const NormalText({required this.alignment, required this.text, super.key});
   
   final String text;
   final TextAlign alignment;

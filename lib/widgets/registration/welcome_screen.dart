@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:planit/widgets/main_button.dart';
 import 'package:planit/widgets/normal_text.dart';
 import 'package:planit/widgets/registration/registration_screen.dart';
-
 import 'package:planit/widgets/title_text.dart';
 import 'package:google_fonts/google_fonts.dart';
 

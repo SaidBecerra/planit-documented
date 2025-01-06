@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class TitleText extends StatelessWidget {
-  const TitleText({this.alignment,required this.text, super.key});
+  const TitleText({this.alignment, required this.text, super.key});
   
   final String text;
   final TextAlign? alignment;
