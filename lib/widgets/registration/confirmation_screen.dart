@@ -78,9 +78,12 @@ class ConfirmationScreen extends StatelessWidget {
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  NormalText(
-                    text: 'Using a different Phone Number?',
-                    alignment: TextAlign.center,
+                  Text(
+                    'Using a different phone number?',
+                    style: GoogleFonts.lato(
+                      color: const Color.fromARGB(255, 59, 59, 59),
+                      fontSize: 16,
+                    ),
                   ),
                   TextButton(
                     onPressed: () {
@@ -90,7 +93,7 @@ class ConfirmationScreen extends StatelessWidget {
                       'Change',
                       style: GoogleFonts.lato(
                         color: Color(0xFFA294F9),
-                        fontSize: 20,
+                        fontSize: 16,
                       ),
                     ),
                   )

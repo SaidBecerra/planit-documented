@@ -93,7 +93,7 @@ void _onLogin(BuildContext context) {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     NormalText(
-                      text: 'Already have an Account?',
+                      text: 'Already have an account?',
                       alignment: TextAlign.center,
                     ),
                     TextButton(
