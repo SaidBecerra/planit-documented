@@ -12,6 +12,8 @@ class DislikesScreen extends StatefulWidget {
 class _DislikesScreenState extends State<DislikesScreen> {
   @override
   Widget build(BuildContext context) {
-    return 
+    return Scaffold(
+      appBar: AppBar(),
+    );
   }
 }
