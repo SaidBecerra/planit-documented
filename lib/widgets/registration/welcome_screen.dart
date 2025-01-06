@@ -28,8 +28,11 @@ class WelcomeScreen extends StatelessWidget {
                 Container(
                   height: 400,
                   decoration: BoxDecoration(
-                    color: Colors.purple,
                     borderRadius: BorderRadius.circular(40),
+                    image: DecorationImage(
+                      image: AssetImage('assets/images/welcome-page.jpg'),
+                      fit: BoxFit.cover,
+                    ),
                   ),
                 ),
                 SizedBox(
