@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:planit/widgets/login/login_screen.dart';
 import 'package:planit/widgets/main_button.dart';
 import 'package:planit/widgets/normal_text.dart';
 import 'package:planit/widgets/otp_square.dart';

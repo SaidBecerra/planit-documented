@@ -16,11 +16,11 @@ class RegistrationScreen extends StatefulWidget {
 
   @override
   State<RegistrationScreen> createState() {
-    return RegistrationScreenState();
+    return _RegistrationScreenState();
   }
 }
 
-class RegistrationScreenState extends State<RegistrationScreen> {
+class _RegistrationScreenState extends State<RegistrationScreen> {
   final _phoneNumberController = TextEditingController();
 
   void _onPhoneVerification(BuildContext context) {
