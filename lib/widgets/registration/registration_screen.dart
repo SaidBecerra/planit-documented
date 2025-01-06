@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:planit/widgets/label_text.dart';
+import 'package:planit/widgets/login/login_screen.dart';
 import 'package:planit/widgets/main_button.dart';
 import 'package:planit/widgets/password_field.dart';
 import 'package:planit/widgets/registration/confirmation_screen.dart';
+import 'package:planit/widgets/scaffold_layout.dart';
 import 'package:planit/widgets/terms_text.dart';
 import 'package:planit/widgets/text_input.dart';
 import 'package:planit/widgets/normal_text.dart';
@@ -29,6 +31,11 @@ class RegistrationScreenState extends State<RegistrationScreen> {
                 ConfirmationScreen(phoneNumber: _phoneNumberController.text)));
   }
 
+  void _onLogin(BuildContext context) {
+    Navigator.push(
+        context, MaterialPageRoute(builder: (ctx) => LoginScreen()));
+  } 
+
   @override
   void dispose() {
     _phoneNumberController.dispose();
@@ -37,36 +44,7 @@ class RegistrationScreenState extends State<RegistrationScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        scrolledUnderElevation: 0,
-        surfaceTintColor: Colors.transparent,
-        leading: Container(
-          margin: const EdgeInsets.only(left: 16, top: 8, bottom: 8),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            shape: BoxShape.circle,
-            boxShadow: [
-              BoxShadow(
-                color: const Color.fromARGB(110, 158, 158, 158),
-                spreadRadius: 2,
-                blurRadius: 4,
-                offset: Offset(0, 2),
-              ),
-            ],
-          ),
-          child: IconButton(
-            icon: Image.asset(
-              'assets/images/left-arrow.png',
-              width: 20,
-              height: 20,
-            ),
-            onPressed: () => Navigator.pop(context),
-          ),
-        ),
-      ),
+    return ScaffoldLayout(
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(20.0),
@@ -152,7 +130,9 @@ class RegistrationScreenState extends State<RegistrationScreen> {
                       alignment: TextAlign.center,
                     ),
                     TextButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        _onLogin(context);
+                      },
                       child: Text(
                         'Login',
                         style: GoogleFonts.lato(

@@ -1,49 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:planit/widgets/login/login_screen.dart';
 import 'package:planit/widgets/main_button.dart';
 import 'package:planit/widgets/normal_text.dart';
+import 'package:planit/widgets/otp_square.dart';
 import 'package:planit/widgets/registration/dislikes_screen.dart';
+import 'package:planit/widgets/scaffold_layout.dart';
 import 'package:planit/widgets/title_text.dart';
 
 class ConfirmationScreen extends StatelessWidget {
   const ConfirmationScreen({required this.phoneNumber, super.key});
   final String phoneNumber;
 
-  void _onContinue(BuildContext context){
-    Navigator.push(context, MaterialPageRoute(builder: (ctx) => DislikesScreen()));
+  void _onContinue(BuildContext context) {
+    Navigator.push(
+        context, MaterialPageRoute(builder: (ctx) => DislikesScreen()));
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        leading: Container(
-          margin: const EdgeInsets.only(left: 16, top: 8, bottom: 8),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            shape: BoxShape.circle,
-            boxShadow: [
-              BoxShadow(
-                color: const Color.fromARGB(110, 158, 158, 158),
-                spreadRadius: 2,
-                blurRadius: 4,
-                offset: Offset(0, 2),
-              ),
-            ],
-          ),
-          child: IconButton(
-            icon: Image.asset(
-              'assets/images/left-arrow.png',
-              width: 20,
-              height: 20,
-            ),
-            onPressed: () => Navigator.pop(context),
-          ),
-        ),
-      ),
+    return ScaffoldLayout(
       body: Padding(
         padding: EdgeInsets.all(20),
         child: Column(
@@ -58,90 +35,45 @@ class ConfirmationScreen extends StatelessWidget {
                 text:
                     'Please enter the OTP Code that we have sent to + $phoneNumber'),
             SizedBox(
-              height: 10,
+              height: 15,
             ),
             Form(
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                mainAxisAlignment: MainAxisAlignment.center,
+                spacing: 15,
                 children: [
-                  SizedBox(
-                    height: 68,
-                    width: 64,
-                    child: TextFormField(
-                      decoration: InputDecoration(hintText: "0"),
-                      keyboardType: TextInputType.number,
-                      textAlign: TextAlign.center,
-                      inputFormatters: [
-                        LengthLimitingTextInputFormatter(1),
-                        FilteringTextInputFormatter.digitsOnly,
-                      ],
-                      onChanged: (value) {
-                        if (value.length == 1) {
-                          FocusScope.of(context).nextFocus();
-                        } else {
-                          FocusScope.of(context).previousFocus();
-                        }
-                      },
-                    ),
+                  OtpSquare(
+                    inputFormatters: [
+                      LengthLimitingTextInputFormatter(1),
+                      FilteringTextInputFormatter.digitsOnly
+                    ],
                   ),
-                  SizedBox(
-                    height: 68,
-                    width: 64,
-                    child: TextFormField(
-                      decoration: InputDecoration(hintText: "0"),
-                      keyboardType: TextInputType.number,
-                      textAlign: TextAlign.center,
-                      inputFormatters: [
-                        LengthLimitingTextInputFormatter(1),
-                        FilteringTextInputFormatter.digitsOnly,
-                      ],
-                      onChanged: (value) {
-                        if (value.length == 1) {
-                          FocusScope.of(context).nextFocus();
-                        } else {
-                          FocusScope.of(context).previousFocus();
-                        }
-                      },
-                    ),
+                  OtpSquare(
+                    inputFormatters: [
+                      LengthLimitingTextInputFormatter(1),
+                      FilteringTextInputFormatter.digitsOnly
+                    ],
                   ),
-                  SizedBox(
-                    height: 68,
-                    width: 64,
-                    child: TextFormField(
-                      decoration: InputDecoration(hintText: "0"),
-                      keyboardType: TextInputType.number,
-                      textAlign: TextAlign.center,
-                      inputFormatters: [
-                        LengthLimitingTextInputFormatter(1),
-                        FilteringTextInputFormatter.digitsOnly,
-                      ],
-                      onChanged: (value) {
-                        if (value.length == 1) {
-                          FocusScope.of(context).nextFocus();
-                        } else {
-                          FocusScope.of(context).previousFocus();
-                        }
-                      },
-                    ),
+                  OtpSquare(
+                    inputFormatters: [
+                      LengthLimitingTextInputFormatter(1),
+                      FilteringTextInputFormatter.digitsOnly
+                    ],
                   ),
-                  SizedBox(
-                    height: 68,
-                    width: 64,
-                    child: TextFormField(
-                      decoration: InputDecoration(hintText: "0"),
-                      keyboardType: TextInputType.number,
-                      textAlign: TextAlign.center,
-                      inputFormatters: [
-                        LengthLimitingTextInputFormatter(1),
-                        FilteringTextInputFormatter.digitsOnly,
-                      ],
-                    ),
+                  OtpSquare(
+                    inputFormatters: [
+                      LengthLimitingTextInputFormatter(1),
+                      FilteringTextInputFormatter.digitsOnly
+                    ],
+                  ),
+                  OtpSquare(
+                    inputFormatters: [
+                      LengthLimitingTextInputFormatter(1),
+                      FilteringTextInputFormatter.digitsOnly
+                    ],
                   ),
                 ],
               ),
-            ),
-            SizedBox(
-              height: 20,
             ),
             Center(
               child: Row(
@@ -152,7 +84,9 @@ class ConfirmationScreen extends StatelessWidget {
                     alignment: TextAlign.center,
                   ),
                   TextButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
                     child: Text(
                       'Change',
                       style: GoogleFonts.lato(
@@ -164,21 +98,24 @@ class ConfirmationScreen extends StatelessWidget {
                 ],
               ),
             ),
-            SizedBox(height: 140,),
+            Spacer(),
             MainButton(
                 text: 'Continue',
                 backgroundColor: Colors.black,
                 foregroundColor: Colors.white,
                 onTap: () {
                   _onContinue(context);
-                }
+                }),
+            SizedBox(
+              height: 20,
             ),
-            SizedBox(height: 20,),
-            MainButton(
-              text: 'Resent Code',
-              backgroundColor: Colors.white,
-              foregroundColor: Colors.black,
-              onTap: () {}
+            Padding(
+              padding: const EdgeInsets.only(bottom: 20),
+              child: MainButton(
+                  text: 'Resent Code',
+                  backgroundColor: Colors.white,
+                  foregroundColor: Colors.black,
+                  onTap: () {}),
             ),
           ],
         ),
