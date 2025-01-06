@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:planit/widgets/login/login_screen.dart';
 import 'package:planit/widgets/main_button.dart';
 import 'package:planit/widgets/normal_text.dart';
 import 'package:planit/widgets/otp_square.dart';
@@ -79,9 +78,12 @@ class ConfirmationScreen extends StatelessWidget {
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  NormalText(
-                    text: 'Using a different Phone Number?',
-                    alignment: TextAlign.center,
+                  Text(
+                    'Using a different phone number?',
+                    style: GoogleFonts.lato(
+                      color: const Color.fromARGB(255, 59, 59, 59),
+                      fontSize: 16,
+                    ),
                   ),
                   TextButton(
                     onPressed: () {
@@ -91,7 +93,7 @@ class ConfirmationScreen extends StatelessWidget {
                       'Change',
                       style: GoogleFonts.lato(
                         color: Color(0xFFA294F9),
-                        fontSize: 20,
+                        fontSize: 16,
                       ),
                     ),
                   )

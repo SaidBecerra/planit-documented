@@ -1,36 +1,54 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-class OtpSquare  extends StatelessWidget{
+class OtpSquare extends StatelessWidget {
   const OtpSquare({
     super.key,
     required this.inputFormatters,
   });
   final List<TextInputFormatter>? inputFormatters;
 
-@override
+  @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: MediaQuery.of(context).size.width * 0.25  ,
-      width: MediaQuery.of(context).size.width * 0.14,
-      child: TextFormField(
-      decoration: InputDecoration(
-        hintText: "0",
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(20),
-        ),
-        fillColor: Colors.white,
-        filled: true,
-        contentPadding:
-          EdgeInsets.symmetric(vertical: 20, horizontal: 12),
+    double size = 60;
+
+    return Container(
+      width: size,
+      height: size,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(15),
+        boxShadow: [
+          BoxShadow(
+            color: const Color.fromARGB(138, 158, 158, 158),
+            spreadRadius: 1,
+            blurRadius: 3,
+            offset: Offset(0, 2),
+          ),
+        ],
       ),
-      keyboardType: TextInputType.number,
-      textAlign: TextAlign.center,
-      inputFormatters: inputFormatters,
-      onChanged: (value) {
-        if (value.length == 1) {
-          FocusScope.of(context).nextFocus();
-        } else if (value.isEmpty) {
+      child: TextFormField(
+        decoration: InputDecoration(
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(15),
+            borderSide: BorderSide.none,
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(15),
+            borderSide: BorderSide.none,
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(15),
+            borderSide: BorderSide(color: Color(0xFFA294F9), width: 2),
+          ),
+          filled: true,
+          fillColor: Colors.white,
+        ),
+        textAlign: TextAlign.center,
+        keyboardType: TextInputType.number,
+        onChanged: (value) {
+          if (value.length == 1) {
+            FocusScope.of(context).nextFocus();
+          } else if (value.isEmpty) {
             FocusScope.of(context).previousFocus();
           }
         },
