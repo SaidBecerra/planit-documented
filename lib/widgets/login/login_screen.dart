@@ -112,7 +112,7 @@ class LoginScreenState extends State<LoginScreen> {
               ),
               SizedBox(height: 15),
               MainButton(
-                text: 'Log in with Google',
+                text: 'Continue with Google',
                 backgroundColor: Colors.white,
                 foregroundColor: Colors.black,
                 image: Image.asset(
