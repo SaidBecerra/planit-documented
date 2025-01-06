@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:planit/widgets/login/login_screen.dart';
 import 'package:planit/widgets/main_button.dart';
 import 'package:planit/widgets/normal_text.dart';
 import 'package:planit/widgets/registration/registration_screen.dart';
+import 'package:planit/widgets/scaffold_layout.dart';
 import 'package:planit/widgets/title_text.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -13,6 +15,11 @@ class WelcomeScreen extends StatelessWidget {
         context, MaterialPageRoute(builder: (ctx) => RegistrationScreen()));
   }
 
+void _onLogin(BuildContext context) {
+    Navigator.push(
+        context, MaterialPageRoute(builder: (ctx) => LoginScreen()));
+  } 
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -91,7 +98,9 @@ class WelcomeScreen extends StatelessWidget {
                       alignment: TextAlign.center,
                     ),
                     TextButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        _onLogin(context);
+                      },
                       child: Text(
                         'Login',
                         style: GoogleFonts.lato(
