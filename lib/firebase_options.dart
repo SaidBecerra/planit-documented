@@ -63,6 +63,8 @@ class DefaultFirebaseOptions {
     messagingSenderId: '391875349362',
     projectId: 'planit-636a0',
     storageBucket: 'planit-636a0.firebasestorage.app',
+    androidClientId: '391875349362-kqbjs5qckvvqu0pgmpj7na1auagp9i67.apps.googleusercontent.com',
+    iosClientId: '391875349362-1gqihi2kj5aquico8n7i44iqkps0ia6n.apps.googleusercontent.com',
     iosBundleId: 'com.example.planit',
   );
 
