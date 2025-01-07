@@ -2,17 +2,27 @@ import 'package:flutter/material.dart';
 
 class TextInput extends StatelessWidget {
   const TextInput(
-      {this.controller, required this.textInputType, required this.hintText, super.key});
+    {
+      this.controller,
+      required this.validator,
+      required this.onSaved,
+      required this.textInputType,
+      required this.hintText,
+      super.key
+    }
+  );
   final String hintText;
   final TextInputType textInputType;
   final TextEditingController? controller;
+  final String? Function(String?) validator;
+  final void Function(String?) onSaved;
 
   @override
   Widget build(BuildContext context) {
-    return TextField(
+    return TextFormField(
       maxLength: 50,
       decoration: InputDecoration(
-        border: OutlineInputBorder(),
+        border: const OutlineInputBorder(),
         hintText: hintText,
         counterText: '',
         filled: true,
@@ -28,6 +38,8 @@ class TextInput extends StatelessWidget {
       ),
       keyboardType: textInputType,
       controller: controller,
+      validator: validator,
+      onSaved: onSaved,
     );
   }
 }

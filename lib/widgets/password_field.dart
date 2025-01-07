@@ -1,8 +1,16 @@
 import 'package:flutter/material.dart';
 
 class PasswordField extends StatefulWidget {
-  const PasswordField({super.key});
+  const PasswordField({
+    super.key,
+    required this.validator,
+    required this.onSaved,
+    }
+  );
 
+  final String? Function(String?) validator;
+  final void Function(String?) onSaved;
+  
   @override
   State<PasswordField> createState() => _PasswordFieldState();
 }
@@ -12,7 +20,7 @@ class _PasswordFieldState extends State<PasswordField> {
 
   @override
   Widget build(BuildContext context) {
-    return TextField(
+    return TextFormField(
       obscureText: _obscureText,
       decoration: InputDecoration(
         border: OutlineInputBorder(
@@ -40,6 +48,8 @@ class _PasswordFieldState extends State<PasswordField> {
           borderSide: BorderSide(color: Colors.grey.shade400),
         ),
       ),
+      validator: widget.validator,
+      onSaved: widget.onSaved,
     );
   }
 }
