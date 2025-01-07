@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:planit/widgets/homepage/dashboard_screen.dart';
+import 'package:planit/widgets/homepage/home_screen.dart';
 import 'package:planit/widgets/label_text.dart';
 import 'package:planit/widgets/main_button.dart';
 import 'package:planit/widgets/normal_text.dart';
@@ -30,7 +30,7 @@ class _LoginScreenState extends State<LoginScreen> {
     Navigator.pushAndRemoveUntil(
       context,
       MaterialPageRoute(
-        builder: (ctx) => const DashboardScreen(),
+        builder: (ctx) => const HomeScreen(),
       ),
       (route) => false,
     );
