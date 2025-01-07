@@ -33,7 +33,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
 
   void _onLogin(BuildContext context) {
     Navigator.push(
-        context, MaterialPageRoute(builder: (ctx) => LoginScreen()));
+        context, MaterialPageRoute(builder: (ctx) => const LoginScreen()));
   } 
 
   @override
@@ -51,59 +51,59 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              TitleText(text: 'Let\'s create a new account'),
-              SizedBox(
+              const TitleText(text: 'Let\'s create a new account'),
+              const SizedBox(
                 height: 6,
               ),
-              NormalText(
+              const NormalText(
                 text: 'Create an account by filling in the data below',
                 alignment: TextAlign.start,
               ),
-              SizedBox(
+              const SizedBox(
                 height: 30,
               ),
-              LabelText(text: 'Full Name'),
-              SizedBox(
+              const LabelText(text: 'Full Name'),
+              const SizedBox(
                 height: 5,
               ),
-              TextInput(
+              const TextInput(
                 hintText: 'Ex: Rosa Parks',
                 textInputType: TextInputType.name,
               ),
-              SizedBox(
+              const SizedBox(
                 height: 15,
               ),
-              LabelText(text: 'Email'),
-              SizedBox(
+              const LabelText(text: 'Email'),
+              const SizedBox(
                 height: 5,
               ),
-              TextInput(
+              const TextInput(
                 hintText: 'Ex: rosaparks@gmail.com',
                 textInputType: TextInputType.emailAddress,
               ),
-              SizedBox(
+              const SizedBox(
                 height: 15,
               ),
-              LabelText(text: 'Phone Number'),
-              SizedBox(
+              const LabelText(text: 'Phone Number'),
+              const SizedBox(
                 height: 5,
               ),
               TextInput(
                   controller: _phoneNumberController,
                   textInputType: TextInputType.phone,
                   hintText: 'Ex: 5147714587'),
-              SizedBox(
+              const SizedBox(
                 height: 15,
               ),
-              LabelText(text: 'Password'),
-              SizedBox(
+              const LabelText(text: 'Password'),
+              const SizedBox(
                 height: 15,
               ),
-              SizedBox(
+              const SizedBox(
                 height: 5,
               ),
-              PasswordField(),
-              SizedBox(
+              const PasswordField(),
+              const SizedBox(
                 height: 30,
               ),
               SizedBox(
@@ -117,7 +117,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                       _onPhoneVerification(context);
                     }),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 10,
               ),
               Center(
@@ -125,7 +125,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    NormalText(
+                    const NormalText(
                       text: 'Already have an account?',
                       alignment: TextAlign.center,
                     ),
@@ -136,7 +136,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                       child: Text(
                         'Login',
                         style: GoogleFonts.lato(
-                          color: Color(0xFFA294F9),
+                          color: const Color(0xFFA294F9),
                           fontSize: 20,
                         ),
                       ),
@@ -144,14 +144,14 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                   ],
                 ),
               ),
-              SizedBox(height: 10),
-              Center(
+              const SizedBox(height: 10),
+              const Center(
                 child: NormalText(
                   text: 'Or sign up with',
                   alignment: TextAlign.center,
                 ),
               ),
-              SizedBox(height: 15),
+              const SizedBox(height: 15),
               MainButton(
                 text: 'Continue with Google',
                 backgroundColor: Colors.white,
@@ -165,8 +165,8 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
               const SizedBox(
                 height: 40,
               ),
-              Padding(
-                padding: const EdgeInsets.only(bottom: 20),
+              const Padding(
+                padding: EdgeInsets.only(bottom: 20),
                 child: Center(
                   child: SizedBox(
                     width: 400,

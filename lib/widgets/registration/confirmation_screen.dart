@@ -4,7 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:planit/widgets/main_button.dart';
 import 'package:planit/widgets/normal_text.dart';
 import 'package:planit/widgets/otp_square.dart';
-import 'package:planit/widgets/registration/dislikes_screen.dart';
+import 'package:planit/widgets/registration/food_dislikes_screen.dart';
 import 'package:planit/widgets/scaffold_layout.dart';
 import 'package:planit/widgets/title_text.dart';
 
@@ -14,26 +14,26 @@ class ConfirmationScreen extends StatelessWidget {
 
   void _onContinue(BuildContext context) {
     Navigator.push(
-        context, MaterialPageRoute(builder: (ctx) => DislikesScreen()));
+        context, MaterialPageRoute(builder: (ctx) => FoodDislikesScreen()));
   }
 
   @override
   Widget build(BuildContext context) {
     return ScaffoldLayout(
       body: Padding(
-        padding: EdgeInsets.all(20),
+        padding: const EdgeInsets.all(20),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            TitleText(text: 'Input OTP Code'),
-            SizedBox(
+            const TitleText(text: 'Input OTP Code'),
+            const SizedBox(
               height: 10,
             ),
             NormalText(
                 alignment: TextAlign.left,
                 text:
                     'Please enter the OTP Code that we have sent to + $phoneNumber'),
-            SizedBox(
+            const SizedBox(
               height: 15,
             ),
             Form(
@@ -92,7 +92,7 @@ class ConfirmationScreen extends StatelessWidget {
                     child: Text(
                       'Change',
                       style: GoogleFonts.lato(
-                        color: Color(0xFFA294F9),
+                        color: const Color(0xFFA294F9),
                         fontSize: 16,
                       ),
                     ),
@@ -100,7 +100,7 @@ class ConfirmationScreen extends StatelessWidget {
                 ],
               ),
             ),
-            Spacer(),
+            const Spacer(),
             MainButton(
                 text: 'Continue',
                 backgroundColor: Colors.black,
@@ -108,7 +108,7 @@ class ConfirmationScreen extends StatelessWidget {
                 onTap: () {
                   _onContinue(context);
                 }),
-            SizedBox(
+            const SizedBox(
               height: 20,
             ),
             Padding(

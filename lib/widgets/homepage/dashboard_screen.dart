@@ -1,13 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
 
   @override
-  State<DashboardScreen> createState() {
-    return _DashboardState();
-  }
+  State<DashboardScreen> createState() => _DashboardState();
 }
 
 class _DashboardState extends State<DashboardScreen> {
@@ -16,76 +13,49 @@ class _DashboardState extends State<DashboardScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      bottomNavigationBar: NavigationBar(
-        selectedIndex: currentIndex,
-        onDestinationSelected: (index) {
-          setState(() {
-            currentIndex = index;
-          });
-        },
-        indicatorColor: Colors.transparent,
-        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-        destinations: [
-          NavigationDestination(
-            icon: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(
-                  Icons.home_outlined,
-                  color: currentIndex == 0
-                      ? Color.fromARGB(255, 0, 0, 0)
-                      : Color.fromARGB(255, 89, 88, 88),
-                  size: 35,
-                ),
-                SizedBox(width: 8),
-                Text('', style: GoogleFonts.lato(fontSize: 16)),
-              ],
+      bottomNavigationBar: Container(
+        padding: const EdgeInsets.symmetric(vertical: 8),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            IconButton(
+              icon: Icon(
+                currentIndex == 0 ? Icons.home : Icons.home_outlined,
+                color: currentIndex == 0 ? Colors.black : Colors.grey,
+              ),
+              onPressed: () => setState(() => currentIndex = 0),
             ),
-            label: '',
-          ),
-          NavigationDestination(
-            icon: Container(
-              padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 10),
               decoration: BoxDecoration(
                 color: Colors.black,
-                borderRadius: BorderRadius.circular(20),
+                borderRadius: BorderRadius.circular(25),
               ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
+              child: const Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Icon(Icons.add, color: Colors.white),
+                  Icon(Icons.add, color: Colors.white, size: 20),
                   SizedBox(width: 8),
                   Text(
-                    'Groupchat',
-                    style: GoogleFonts.lato(
-                      fontSize: 16,
+                    'New Chat',
+                    style: TextStyle(
                       color: Colors.white,
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500,
                     ),
                   ),
                 ],
               ),
             ),
-            label: '',
-          ),
-          NavigationDestination(
-            icon: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(
-                  Icons.person_outline_outlined,
-                  color: currentIndex == 2
-                      ? Color.fromARGB(255, 0, 0, 0)
-                      : Color.fromARGB(255, 89, 88, 88),
-                  size: 35,
-                ),
-                SizedBox(width: 8),
-                Text('', style: GoogleFonts.lato(fontSize: 16)),
-              ],
+            IconButton(
+              icon: Icon(
+                currentIndex == 2 ? Icons.person : Icons.person_outline,
+                color: currentIndex == 2 ? Colors.black : Colors.grey,
+              ),
+              onPressed: () => setState(() => currentIndex = 2),
             ),
-            label: '',
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

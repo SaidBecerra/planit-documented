@@ -22,13 +22,18 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   void _onRegister(BuildContext context) {
-    Navigator.push(
-        context, MaterialPageRoute(builder: (ctx) => RegistrationScreen()));
+    Navigator.push(context,
+        MaterialPageRoute(builder: (ctx) => const RegistrationScreen()));
   }
 
-    void _onLogin(BuildContext context) {
-    Navigator.push(
-        context, MaterialPageRoute(builder: (ctx) => DashboardScreen()));
+  void _onHome(BuildContext context) {
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(
+        builder: (ctx) => const DashboardScreen(),
+      ),
+      (route) => false,
+    );
   }
 
   @override
@@ -36,41 +41,41 @@ class _LoginScreenState extends State<LoginScreen> {
     return ScaffoldLayout(
       body: SingleChildScrollView(
         child: Padding(
-          padding: EdgeInsets.all(20),
+          padding: const EdgeInsets.all(20),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              TitleText(text: 'Let\'s log into your account!'),
-              SizedBox(
+              const TitleText(text: 'Let\'s log into your account!'),
+              const SizedBox(
                 height: 6,
               ),
-              NormalText(
+              const NormalText(
                 text: 'Log into your account by filling in the data below',
                 alignment: TextAlign.start,
               ),
-              SizedBox(
+              const SizedBox(
                 height: 30,
               ),
-              LabelText(text: 'Email'),
-              SizedBox(
+              const LabelText(text: 'Email'),
+              const SizedBox(
                 height: 5,
               ),
-              TextInput(
+              const TextInput(
                 hintText: 'Ex: rosaparks@gmail.com',
                 textInputType: TextInputType.emailAddress,
               ),
-              SizedBox(
+              const SizedBox(
                 height: 15,
               ),
-              LabelText(text: 'Password'),
-              SizedBox(
+              const LabelText(text: 'Password'),
+              const SizedBox(
                 height: 15,
               ),
-              SizedBox(
+              const SizedBox(
                 height: 5,
               ),
-              PasswordField(),
-              SizedBox(
+              const PasswordField(),
+              const SizedBox(
                 height: 30,
               ),
               SizedBox(
@@ -81,10 +86,10 @@ class _LoginScreenState extends State<LoginScreen> {
                     backgroundColor: Colors.black,
                     foregroundColor: Colors.white,
                     onTap: () {
-                      _onLogin(context);
+                      _onHome(context);
                     }),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 10,
               ),
               Center(
@@ -92,7 +97,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    NormalText(
+                    const NormalText(
                       text: 'Don\'t have an account?',
                       alignment: TextAlign.center,
                     ),
@@ -103,7 +108,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       child: Text(
                         'Register',
                         style: GoogleFonts.lato(
-                          color: Color(0xFFA294F9),
+                          color: const Color(0xFFA294F9),
                           fontSize: 20,
                         ),
                       ),
@@ -111,14 +116,14 @@ class _LoginScreenState extends State<LoginScreen> {
                   ],
                 ),
               ),
-              SizedBox(height: 10),
-              Center(
+              const SizedBox(height: 10),
+              const Center(
                 child: NormalText(
                   text: 'Or log in with',
                   alignment: TextAlign.center,
                 ),
               ),
-              SizedBox(height: 15),
+              const SizedBox(height: 15),
               MainButton(
                 text: 'Continue with Google',
                 backgroundColor: Colors.white,
@@ -129,9 +134,9 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
                 onTap: () {},
               ),
-              SizedBox(height: 40),
-              Padding(
-                padding: const EdgeInsets.only(bottom: 20),
+              const SizedBox(height: 40),
+              const Padding(
+                padding: EdgeInsets.only(bottom: 20),
                 child: Center(
                   child: SizedBox(
                     child: TermsText(),

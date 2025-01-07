@@ -11,18 +11,18 @@ class WelcomeScreen extends StatelessWidget {
 
   void _onRegister(BuildContext context) {
     Navigator.push(
-        context, MaterialPageRoute(builder: (ctx) => RegistrationScreen()));
+        context, MaterialPageRoute(builder: (ctx) => const RegistrationScreen()));
   }
 
 void _onLogin(BuildContext context) {
     Navigator.push(
-        context, MaterialPageRoute(builder: (ctx) => LoginScreen()));
+        context, MaterialPageRoute(builder: (ctx) => const LoginScreen()));
   } 
   
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFFF5EFFF),
+      backgroundColor: const Color(0xFFF5EFFF),
       body: SingleChildScrollView(
         child: SafeArea(
           child: Padding(
@@ -34,27 +34,27 @@ void _onLogin(BuildContext context) {
                   height: 400,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(40),
-                    image: DecorationImage(
+                    image: const DecorationImage(
                       image: AssetImage('assets/images/welcome-page.jpg'),
                       fit: BoxFit.cover,
                     ),
                   ),
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 40,
                 ),
-                TitleText(text: 'Let\'s Get Started!'),
-                SizedBox(
+                const TitleText(text: 'Let\'s Get Started!'),
+                const SizedBox(
                   height: 10,
                 ),
-                SizedBox(
+                const SizedBox(
                     width: 350,
                     child: NormalText(
                       alignment: TextAlign.center,
                       text:
                           'Create a PlanIt account or login if you already have an account',
                     )),
-                SizedBox(height: 40),
+                const SizedBox(height: 40),
                 MainButton(
                   text: 'Register with Email',
                   backgroundColor: Colors.black,
@@ -68,12 +68,12 @@ void _onLogin(BuildContext context) {
                     _onRegister(context);
                   },
                 ),
-                SizedBox(height: 20),
-                NormalText(
+                const SizedBox(height: 20),
+                const NormalText(
                   text: 'Or',
                   alignment: TextAlign.center,
                 ),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
                 MainButton(
                   text: 'Continue with Google',
                   backgroundColor: Colors.white,
@@ -86,13 +86,13 @@ void _onLogin(BuildContext context) {
                     _onRegister(context);
                   },
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 20,
                 ),
                 Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    NormalText(
+                    const NormalText(
                       text: 'Already have an account?',
                       alignment: TextAlign.center,
                     ),
@@ -103,7 +103,7 @@ void _onLogin(BuildContext context) {
                       child: Text(
                         'Login',
                         style: GoogleFonts.lato(
-                          color: Color(0xFFA294F9),
+                          color: const Color(0xFFA294F9),
                           fontSize: 20,
                         ),
                       ),
