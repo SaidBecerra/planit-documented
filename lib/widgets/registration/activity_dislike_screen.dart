@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:planit/widgets/homepage/home_screen.dart';
 import 'package:planit/widgets/scaffold_layout.dart';
 import 'package:planit/widgets/title_text.dart';
 import 'package:planit/widgets/filterchips_list.dart';
 import 'package:planit/widgets/main_button.dart';
-import 'package:planit/widgets/homepage/dashboard_screen.dart';
 
 class ActivityDislikeScreen extends StatelessWidget {
   ActivityDislikeScreen({super.key});
@@ -12,7 +12,7 @@ class ActivityDislikeScreen extends StatelessWidget {
     Navigator.pushAndRemoveUntil(
       context,
       MaterialPageRoute(
-        builder: (ctx) => const DashboardScreen(),
+        builder: (ctx) => const HomeScreen(),
       ),
       (route) => false,
     );
