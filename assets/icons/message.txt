@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:planit/widgets/input_field.dart';
 import 'package:planit/widgets/label_text.dart';
 import 'package:planit/widgets/login/login_screen.dart';
 import 'package:planit/widgets/main_button.dart';
@@ -15,6 +14,7 @@ import 'package:planit/widgets/title_text.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 final _firebase = FirebaseAuth.instance;
+final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
 class RegistrationScreen extends StatefulWidget {
   const RegistrationScreen({super.key});
@@ -36,6 +36,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
 
   void _registerUser() async {
     if (_form.currentState!.validate()) {
+      print('AAAAAAAAAAAAAK;DJSENG;JKERNGF;JKERNGFERNG;KJERNG;KEJRNGVNJKVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV');
       _form.currentState!.save();
 
       try {
@@ -44,41 +45,30 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
           password: _enteredPassword,
         );
 
-        try {
-          await FirebaseFirestore.instance
-              .collection('users')
-              .doc(userCredential.user!.uid)
-              .set({
-            'name': _enteredName,
-            'email': _enteredEmail,
-            'phoneNumber': _enteredPhoneNumber,
-            'foodDislikes': {},
-            'activityDislikes': {},
-            'createdAt': FieldValue.serverTimestamp(),
-          });
-        } catch (firestoreError) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Error saving user data: $firestoreError')),
+        await _firestore.collection('users').doc(userCredential.user!.uid).set({
+          'name': _enteredName,
+          'email': _enteredEmail,
+          'phoneNumber': _enteredPhoneNumber,
+          'foodDislikes': {},
+          'activityDislikes': {},
+          'createdAt': FieldValue.serverTimestamp(),
+        });
+        print('Im here');
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (ctx) =>
+                  ConfirmationScreen(phoneNumber: _enteredPhoneNumber),
+            ),
           );
-          await userCredential.user?.delete();
-          return;
-        }
-
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (ctx) =>
-                ConfirmationScreen(phoneNumber: _enteredPhoneNumber),
-          ),
-        );
       } on FirebaseAuthException catch (error) {
         ScaffoldMessenger.of(context).clearSnackBars();
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(error.message ?? 'Authentication failed')),
+        SnackBar(content: Text(error.message ?? 'Authentication failed')),
         );
       }
     }
-    if (!_form.currentState!.validate()) {
+    if (!_form.currentState!.validate()){
       return;
     }
   }
@@ -157,10 +147,13 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                 const SizedBox(
                   height: 30,
                 ),
-                InputField(
-                  label: 'Full Name',
-                  hint: 'Ex: Rosa Parks',
-                  inputType: TextInputType.name,
+                const LabelText(text: 'Full Name'),
+                const SizedBox(
+                  height: 5,
+                ),
+                TextInput(
+                  hintText: 'Ex: Rosa Parks',
+                  textInputType: TextInputType.name,
                   validator: nameValidator,
                   onSaved: (value) {
                     _enteredName = value!;
@@ -169,10 +162,13 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                 const SizedBox(
                   height: 15,
                 ),
-                InputField(
-                  label: 'Email',
-                  hint: 'Ex: rosaparks@gmail.com',
-                  inputType: TextInputType.emailAddress,
+                const LabelText(text: 'Email'),
+                const SizedBox(
+                  height: 5,
+                ),
+                TextInput(
+                  hintText: 'Ex: rosaparks@gmail.com',
+                  textInputType: TextInputType.emailAddress,
                   validator: emailValidator,
                   onSaved: (value) {
                     _enteredEmail = value!;
@@ -181,10 +177,14 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                 const SizedBox(
                   height: 15,
                 ),
-                InputField(
-                  label: 'Phone Number',
-                  hint: 'Ex: 5147714587',
-                  inputType: TextInputType.phone,
+                const LabelText(text: 'Phone Number'),
+                const SizedBox(
+                  height: 5,
+                ),
+                TextInput(
+                  controller: _phoneNumberController,
+                  textInputType: TextInputType.phone,
+                  hintText: 'Ex: 5147714587',
                   validator: phoneNumberValidator,
                   onSaved: (value) {
                     _enteredPhoneNumber = value!;
@@ -194,6 +194,9 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                   height: 15,
                 ),
                 const LabelText(text: 'Password'),
+                const SizedBox(
+                  height: 15,
+                ),
                 const SizedBox(
                   height: 5,
                 ),
@@ -210,11 +213,11 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                   width: double.infinity,
                   height: 55,
                   child: MainButton(
-                    text: 'Register',
-                    backgroundColor: Colors.black,
-                    foregroundColor: Colors.white,
-                    onTap: _registerUser,
-                  ),
+                      text: 'Register',
+                      backgroundColor: Colors.black,
+                      foregroundColor: Colors.white,
+                      onTap: _registerUser,
+                    ),
                 ),
                 const SizedBox(
                   height: 10,

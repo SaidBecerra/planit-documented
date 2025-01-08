@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:planit/widgets/homepage/home_screen.dart';
+import 'package:planit/widgets/homepage/custom_navigation_bar.dart';
 import 'package:planit/widgets/scaffold_layout.dart';
 import 'package:planit/widgets/title_text.dart';
 import 'package:planit/widgets/filterchips_list.dart';
@@ -10,37 +10,37 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 class ActivityDislikeScreen extends StatelessWidget {
   ActivityDislikeScreen({super.key});
 
-void _onHome(BuildContext context) async {
-  final currentUser = FirebaseAuth.instance.currentUser;
+  void _onHome(BuildContext context) async {
+    final currentUser = FirebaseAuth.instance.currentUser;
 
-  if (currentUser != null) {
-    final selectedDislikes = activityChips.entries
-        .where((entry) => entry.value)
-        .map((entry) => entry.key)
-        .toList();
+    if (currentUser != null) {
+      final selectedDislikes = activityChips.entries
+          .where((entry) => entry.value)
+          .map((entry) => entry.key)
+          .toList();
 
-    try {
-      await FirebaseFirestore.instance
-          .collection('users')
-          .doc(currentUser.uid)
-          .update({
-        'activityDislikes': selectedDislikes,
-      });
+      try {
+        await FirebaseFirestore.instance
+            .collection('users')
+            .doc(currentUser.uid)
+            .update({
+          'activityDislikes': selectedDislikes,
+        });
 
-      Navigator.pushAndRemoveUntil(
-        context,
-        MaterialPageRoute(
-          builder: (ctx) => const HomeScreen(),
-        ),
-        (route) => false,
-      );
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to save activity dislikes: $e')),
-      );
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(
+            builder: (ctx) => const CustomNavigatonBar(),
+          ),
+          (route) => false,
+        );
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Failed to save activity dislikes: $e')),
+        );
+      }
     }
   }
-}
 
   final Map<String, bool> activityChips = {
     'Hiking': false,
@@ -85,10 +85,12 @@ void _onHome(BuildContext context) async {
               const SizedBox(
                 height: 40,
               ),
-              FilterchipsList(selectedChips: activityChips),
-              const Spacer(),
+              Expanded(child: FilterchipsList(selectedChips: activityChips)),
               Padding(
-                padding: const EdgeInsets.only(bottom: 10),
+                padding: const EdgeInsets.only(
+                  bottom: 10,
+                  top: 20,
+                ),
                 child: MainButton(
                     text: 'Next',
                     backgroundColor: Colors.black,

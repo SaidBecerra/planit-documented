@@ -15,8 +15,7 @@ class FilterchipsList extends StatefulWidget {
 class _FilterchipsListState extends State<FilterchipsList> {
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: MediaQuery.of(context).size.height * 0.6,
+    return Expanded(
       child: Scrollbar(
         thumbVisibility: true,
         thickness: 6,
