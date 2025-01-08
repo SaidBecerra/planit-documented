@@ -18,8 +18,8 @@ class OtpSquare extends StatelessWidget {
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(15),
         boxShadow: [
-          BoxShadow(
-            color: const Color.fromARGB(138, 158, 158, 158),
+          const BoxShadow(
+            color:  Color.fromARGB(138, 158, 158, 158),
             spreadRadius: 1,
             blurRadius: 3,
             offset: Offset(0, 2),
@@ -38,7 +38,7 @@ class OtpSquare extends StatelessWidget {
           ),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(15),
-            borderSide: BorderSide(color: Color(0xFFA294F9), width: 2),
+            borderSide: const BorderSide(color: Color(0xFFA294F9), width: 2),
           ),
           filled: true,
           fillColor: Colors.white,

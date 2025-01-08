@@ -4,6 +4,8 @@ import 'package:planit/widgets/main_button.dart';
 import 'package:planit/widgets/registration/activity_dislike_screen.dart';
 import 'package:planit/widgets/scaffold_layout.dart';
 import 'package:planit/widgets/title_text.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class FoodDislikesScreen extends StatelessWidget {
   FoodDislikesScreen({super.key});
@@ -32,9 +34,32 @@ class FoodDislikesScreen extends StatelessWidget {
     'BBQ': false,
   };
 
-  void _onActivityDislike(BuildContext context) {
-    Navigator.push(
-        context, MaterialPageRoute(builder: (ctx) => ActivityDislikeScreen()));
+  void _onActivityDislike(BuildContext context) async {
+    final currentUser = FirebaseAuth.instance.currentUser;
+
+    if (currentUser != null) {
+      final selectedDislikes = foodChips.entries
+          .where((entry) => entry.value)
+          .map((entry) => entry.key)
+          .toList();
+
+      try {
+        await FirebaseFirestore.instance
+            .collection('users')
+            .doc(currentUser.uid)
+            .update({
+          'foodDislikes': selectedDislikes,
+        });
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (ctx) => ActivityDislikeScreen()),
+        );
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Failed to save dislikes: $e')),
+        );
+      }
+    }
   }
 
   @override
@@ -56,7 +81,9 @@ class FoodDislikesScreen extends StatelessWidget {
               const SizedBox(
                 height: 40,
               ),
-              FilterchipsList(selectedChips: foodChips),
+              Expanded(
+                child: FilterchipsList(selectedChips: foodChips),
+              ),
               Padding(
                 padding: const EdgeInsets.only(
                   bottom: 10,
