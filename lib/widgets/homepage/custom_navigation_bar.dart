@@ -1,8 +1,10 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:planit/widgets/NewGroupChatBottomSheet.dart';
 import 'package:planit/widgets/homepage/home_screen.dart';
 import 'package:planit/widgets/homepage/profile_screen.dart';
+import 'package:planit/widgets/registration/welcome_screen.dart';
 
 class CustomNavigatonBar extends StatefulWidget {
   const CustomNavigatonBar({super.key});
@@ -28,8 +30,24 @@ class _CustomNavigationBarState extends State<CustomNavigatonBar> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(currentIndex == 0 ? 'Home' : 'Profile'),
-      ),
+          title: Text(currentIndex == 0 ? 'Home' : 'Profile'),
+          actions: currentIndex == 1
+              ? [
+                  IconButton(
+                    onPressed: () {
+                      FirebaseAuth.instance.signOut();
+                      Navigator.pushAndRemoveUntil(
+                        context,
+                        MaterialPageRoute(
+                          builder: (ctx) => const WelcomeScreen(),
+                        ),
+                        (route) => false,
+                      );
+                    },
+                    icon: const Icon(Icons.exit_to_app),
+                  )
+                ]
+              : null),
       bottomNavigationBar: Container(
         decoration: const BoxDecoration(
           color: Colors.white,
