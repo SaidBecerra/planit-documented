@@ -3,15 +3,18 @@ import 'package:flutter/material.dart';
 class ScaffoldLayout extends StatelessWidget{
   const ScaffoldLayout({
     this.backgroundColor,
+    this.floatingActionButton,
     required this.body,
     super.key
   });
   final Widget body;
   final Color? backgroundColor;
+  final FloatingActionButton? floatingActionButton;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      floatingActionButton: floatingActionButton,
       appBar: AppBar(
         leading: Container(
           margin: const EdgeInsets.only(left: 16, top: 8, bottom: 8),
