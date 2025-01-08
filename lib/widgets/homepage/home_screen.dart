@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:planit/widgets/groupchat/groupchat.dart';
 import 'package:planit/widgets/homepage/custom_navigation_bar.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -6,14 +7,55 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Home'),
-      ),
-      bottomNavigationBar: const CustomNavigatonBar(currentIndex: 0),
-      body: const Center(
-        child: Text('hello'),
-      ),
+    return const Column(
+      children: [
+        Expanded(
+          child: Scrollbar(
+            thumbVisibility: true,
+            thickness: 6,
+            radius: Radius.circular(10),
+            child: SingleChildScrollView(
+              padding: EdgeInsets.only(right: 12),
+              child: Column(
+                children: [
+                  GroupChat(
+                    name: 'Goofy Goobers',
+                    tripCount: 5,
+                  ),
+                  GroupChat(
+                    name: 'Goofy Goobers',
+                    tripCount: 5,
+                  ),
+                  GroupChat(
+                    name: 'Goofy Goobers',
+                    tripCount: 5,
+                  ),
+                  GroupChat(
+                    name: 'Goofy Goobers',
+                    tripCount: 5,
+                  ),
+                  GroupChat(
+                    name: 'Goofy Goobers',
+                    tripCount: 5,
+                  ),
+                  GroupChat(
+                    name: 'Goofy Goobers',
+                    tripCount: 5,
+                  ),
+                  GroupChat(
+                    name: 'Goofy Goobers',
+                    tripCount: 5,
+                  ),
+                  GroupChat(
+                    name: 'Goofy Goobers',
+                    tripCount: 5,
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

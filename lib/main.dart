@@ -1,6 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:planit/widgets/homepage/home_screen.dart';
+import 'package:planit/widgets/homepage/custom_navigation_bar.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:planit/widgets/registration/welcome_screen.dart';
 import 'firebase_options.dart';
@@ -15,7 +15,7 @@ void main() async {
         stream: FirebaseAuth.instance.authStateChanges(),
         builder: (ctx, snapshot){
           if (snapshot.hasData){
-            return const HomeScreen();
+            return const CustomNavigatonBar();
           }
           return const WelcomeScreen();
         },

@@ -2,7 +2,9 @@
 
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:planit/widgets/homepage/custom_navigation_bar.dart';
 import 'package:planit/widgets/homepage/home_screen.dart';
+import 'package:planit/widgets/input_field.dart';
 import 'package:planit/widgets/label_text.dart';
 import 'package:planit/widgets/main_button.dart';
 import 'package:planit/widgets/normal_text.dart';
@@ -26,11 +28,9 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-
   var _enteredEmail = '';
   var _enteredPassword = '';
-    final _form = GlobalKey<FormState>();
-
+  final _form = GlobalKey<FormState>();
 
   void _onRegister(BuildContext context) {
     Navigator.push(context,
@@ -41,49 +41,49 @@ class _LoginScreenState extends State<LoginScreen> {
     Navigator.pushAndRemoveUntil(
       context,
       MaterialPageRoute(
-        builder: (ctx) => const HomeScreen(),
+        builder: (ctx) => const CustomNavigatonBar(),
       ),
       (route) => false,
     );
   }
 
-String? emailValidator(String? value) {
-  if (value == null || value.isEmpty) {
-    return 'Email cannot be empty';
+  String? emailValidator(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Email cannot be empty';
+    }
+    if (!RegExp(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$')
+        .hasMatch(value)) {
+      return 'Please enter a valid email address';
+    }
+    return null;
   }
-  if (!RegExp(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$').hasMatch(value)) {
-    return 'Please enter a valid email address';
-  }
-  return null;
-}
 
-String? passwordValidator(String? value) {
-  if (value == null || value.isEmpty) {
-    return 'Password cannot be empty';
+  String? passwordValidator(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Password cannot be empty';
+    }
+    if (value.length < 6) {
+      return 'Password must be at least 6 characters long';
+    }
+    return null;
   }
-  if (value.length < 6) {
-    return 'Password must be at least 6 characters long';
-  }
-  return null;
-}
 
-void login() async {
-  final isValid = _form.currentState!.validate();
+  void login() async {
+    final isValid = _form.currentState!.validate();
 
-  if (!isValid){
-    return;
+    if (!isValid) {
+      return;
+    }
+    _form.currentState!.save();
+    try {
+      final UserCredential = await _firebase.signInWithEmailAndPassword(
+          email: _enteredEmail, password: _enteredPassword);
+    } on FirebaseAuthException catch (error) {
+      ScaffoldMessenger.of(context).clearSnackBars();
+      ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(error.message ?? 'Authentication failed')));
+    }
   }
-  _form.currentState!.save();
-  try {
-    final UserCredential = await _firebase.signInWithEmailAndPassword(
-      email: _enteredEmail,
-      password: _enteredPassword
-    );
-  } on FirebaseAuthException catch(error) {
-    ScaffoldMessenger.of(context).clearSnackBars();
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(error.message ?? 'Authentication failed')));
-  }
-}
 
   @override
   Widget build(BuildContext context) {
@@ -107,15 +107,11 @@ void login() async {
                 const SizedBox(
                   height: 30,
                 ),
-                const LabelText(text: 'Email'),
-                const SizedBox(
-                  height: 5,
-                ),
-                TextInput(
-                  validator: emailValidator,
-                  hintText: 'Ex: rosaparks@gmail.com',
-                  textInputType: TextInputType.emailAddress,
-                  onSaved: (value){
+                InputField(
+                  label: 'Email',
+                  hint: 'Ex: rosaparks@gmail.com',
+                  inputType: TextInputType.emailAddress,
+                  onSaved: (value) {
                     _enteredEmail = value!;
                   },
                 ),
@@ -123,9 +119,6 @@ void login() async {
                   height: 15,
                 ),
                 const LabelText(text: 'Password'),
-                const SizedBox(
-                  height: 15,
-                ),
                 const SizedBox(
                   height: 5,
                 ),

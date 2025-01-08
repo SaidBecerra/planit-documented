@@ -33,8 +33,8 @@ class FoodDislikesScreen extends StatelessWidget {
   };
 
   void _onActivityDislike(BuildContext context) {
-    Navigator.push(context,
-        MaterialPageRoute(builder: (ctx) => ActivityDislikeScreen()));
+    Navigator.push(
+        context, MaterialPageRoute(builder: (ctx) => ActivityDislikeScreen()));
   }
 
   @override
@@ -57,9 +57,11 @@ class FoodDislikesScreen extends StatelessWidget {
                 height: 40,
               ),
               FilterchipsList(selectedChips: foodChips),
-              const Spacer(),
               Padding(
-                padding: const EdgeInsets.only(bottom: 10),
+                padding: const EdgeInsets.only(
+                  bottom: 10,
+                  top: 20,
+                ),
                 child: MainButton(
                     text: 'Next',
                     backgroundColor: Colors.black,

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:planit/widgets/homepage/home_screen.dart';
+import 'package:planit/widgets/homepage/custom_navigation_bar.dart';
 import 'package:planit/widgets/scaffold_layout.dart';
 import 'package:planit/widgets/title_text.dart';
 import 'package:planit/widgets/filterchips_list.dart';
@@ -12,7 +12,7 @@ class ActivityDislikeScreen extends StatelessWidget {
     Navigator.pushAndRemoveUntil(
       context,
       MaterialPageRoute(
-        builder: (ctx) => const HomeScreen(),
+        builder: (ctx) => const CustomNavigatonBar(),
       ),
       (route) => false,
     );
@@ -62,9 +62,11 @@ class ActivityDislikeScreen extends StatelessWidget {
                 height: 40,
               ),
               FilterchipsList(selectedChips: activityChips),
-              const Spacer(),
               Padding(
-                padding: const EdgeInsets.only(bottom: 10),
+                padding: const EdgeInsets.only(
+                  bottom: 10,
+                  top: 20,
+                ),
                 child: MainButton(
                     text: 'Next',
                     backgroundColor: Colors.black,

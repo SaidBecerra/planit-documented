@@ -1,0 +1,103 @@
+I//flutter (11530): AAAAAAAAAAAAAK;DJSENG;JKERNGF;JKERNGFERNG;KJERNG;KEJRNGVNJKVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV
+I/FirebaseAuth(11530): Creating user with testing16@gmail.com with empty reCAPTCHA token
+W/System  (11530): Ignoring header X-Firebase-Locale because its value was null.
+D/TrafficStats(11530): tagSocket(187) with statsTag=0xffffffff, statsUid=-1
+I/.example.planit(11530): Background concurrent mark compact GC freed 2682KB AllocSpace bytes, 2(104KB) LOS objects, 49% free, 3266KB/6533KB, paused 3.247ms,18.486ms total 110.133ms
+W/System  (11530): Ignoring header X-Firebase-Locale because its value was null.
+D/FirebaseAuth(11530): Notifying id token listeners about user ( 0PbpAr2unpM6yqomQpEJ9HisN5k1 ).
+D/FirebaseAuth(11530): Notifying auth state listeners about user ( 0PbpAr2unpM6yqomQpEJ9HisN5k1 ).
+D/EGL_emulation(11530): app_time_stats: avg=87.05ms min=8.16ms max=882.14ms count=18
+W/DynamiteModule(11530): Local module descriptor class for com.google.android.gms.providerinstaller.dynamite not found.
+I/DynamiteModule(11530): Considering local module com.google.android.gms.providerinstaller.dynamite:0 and remote module com.google.android.gms.providerinstaller.dynamite:0
+W/ProviderInstaller(11530): Failed to load providerinstaller module: No acceptable module com.google.android.gms.providerinstaller.dynamite found. Local version is 0 and remote version is 0.
+D/ApplicationLoaders(11530): Returning zygote-cached class loader: /system/framework/org.apache.http.legacy.jar
+D/nativeloader(11530): Configuring clns-8 for other apk /system/framework/com.android.media.remotedisplay.jar. target_sdk_version=35, uses_libraries=ALL, library_path=/data/app/~~DEGVoBQg9C7s3EquLPeFAA==/com.google.android.gms-NuY3LxTQKhc4eLuvCXmxpw==/lib/x86_64:/data/app/~~DEGVoBQg9C7s3EquLPeFAA==/com.google.android.gms-NuY3LxTQKhc4eLuvCXmxpw==/base.apk!/lib/x86_64, permitted_path=/data:/mnt/expand:/data/user/0/com.google.android.gms
+D/nativeloader(11530): Configuring clns-9 for other apk /system/framework/com.android.location.provider.jar. target_sdk_version=35, uses_libraries=ALL, library_path=/data/app/~~DEGVoBQg9C7s3EquLPeFAA==/com.google.android.gms-NuY3LxTQKhc4eLuvCXmxpw==/lib/x86_64:/data/app/~~DEGVoBQg9C7s3EquLPeFAA==/com.google.android.gms-NuY3LxTQKhc4eLuvCXmxpw==/base.apk!/lib/x86_64, permitted_path=/data:/mnt/expand:/data/user/0/com.google.android.gms
+D/ApplicationLoaders(11530): Returning zygote-cached class loader: /system_ext/framework/androidx.window.extensions.jar
+D/ApplicationLoaders(11530): Returning zygote-cached class loader: /system_ext/framework/androidx.window.sidecar.jar
+W/.example.planit(11530): Loading /data/app/~~DEGVoBQg9C7s3EquLPeFAA==/com.google.android.gms-NuY3LxTQKhc4eLuvCXmxpw==/oat/x86_64/base.odex non-executable as it requires an image which we failed to load
+D/nativeloader(11530): Configuring clns-10 for other apk /data/app/~~DEGVoBQg9C7s3EquLPeFAA==/com.google.android.gms-NuY3LxTQKhc4eLuvCXmxpw==/base.apk. target_sdk_version=35, uses_libraries=, library_path=/data/app/~~DEGVoBQg9C7s3EquLPeFAA==/com.google.android.gms-NuY3LxTQKhc4eLuvCXmxpw==/lib/x86_64:/data/app/~~DEGVoBQg9C7s3EquLPeFAA==/com.google.android.gms-NuY3LxTQKhc4eLuvCXmxpw==/base.apk!/lib/x86_64, permitted_path=/data:/mnt/expand:/data/user/0/com.google.android.gms
+W/ProviderInstaller(11530): Failed to report request stats: com.google.android.gms.common.security.ProviderInstallerImpl.reportRequestStats [class android.content.Context, long, long]
+I/.example.planit(11530): Waiting for a blocking GC ClassLinker
+D/nativeloader(11530): Load /data/app/~~DEGVoBQg9C7s3EquLPeFAA==/com.google.android.gms-NuY3LxTQKhc4eLuvCXmxpw==/base.apk!/lib/x86_64/libconscrypt_gmscore_jni.so using ns clns-10 from class loader (caller=/data/app/~~DEGVoBQg9C7s3EquLPeFAA==/com.google.android.gms-NuY3LxTQKhc4eLuvCXmxpw==/base.apk!classes3.dex): ok
+I/.example.planit(11530): Waiting for a blocking GC ClassLinker
+I/.example.planit(11530): Background concurrent mark compact GC freed 1573KB AllocSpace bytes, 6(248KB) LOS objects, 49% free, 5004KB/10008KB, paused 20.630ms,10.559ms total 213.574ms
+I/.example.planit(11530): WaitForGcToComplete blocked ClassLinker on Background for 106.666ms
+I/.example.planit(11530): WaitForGcToComplete blocked ClassLinker on ClassLinker for 62.814ms
+V/NativeCrypto(11530): Registering com/google/android/gms/org/conscrypt/NativeCrypto's 305 native methods...
+E/GoogleApiManager(11530): Failed to get service from broker. 
+E/GoogleApiManager(11530): java.lang.SecurityException: Unknown calling package name 'com.google.android.gms'.
+E/GoogleApiManager(11530): 	at android.os.Parcel.createExceptionOrNull(Parcel.java:3242)
+E/GoogleApiManager(11530): 	at android.os.Parcel.createException(Parcel.java:3226)
+E/GoogleApiManager(11530): 	at android.os.Parcel.readException(Parcel.java:3209)
+E/GoogleApiManager(11530): 	at android.os.Parcel.readException(Parcel.java:3151)
+E/GoogleApiManager(11530): 	at aodp.a(:com.google.android.gms@244738038@24.47.38 (260800-705893532):36)
+E/GoogleApiManager(11530): 	at aobw.z(:com.google.android.gms@244738038@24.47.38 (260800-705893532):143)
+E/GoogleApiManager(11530): 	at anjf.run(:com.google.android.gms@244738038@24.47.38 (260800-705893532):54)
+E/GoogleApiManager(11530): 	at android.os.Handler.handleCallback(Handler.java:959)
+E/GoogleApiManager(11530): 	at android.os.Handler.dispatchMessage(Handler.java:100)
+E/GoogleApiManager(11530): 	at buhu.mv(:com.google.android.gms@244738038@24.47.38 (260800-705893532):1)
+E/GoogleApiManager(11530): 	at buhu.dispatchMessage(:com.google.android.gms@244738038@24.47.38 (260800-705893532):5)
+E/GoogleApiManager(11530): 	at android.os.Looper.loopOnce(Looper.java:232)
+E/GoogleApiManager(11530): 	at android.os.Looper.loop(Looper.java:317)
+E/GoogleApiManager(11530): 	at android.os.HandlerThread.run(HandlerThread.java:85)
+W/CondFlagRegistrar(11530): Failed to register com.google.android.gms.providerinstaller#com.google.android.gms
+W/CondFlagRegistrar(11530): emos: 17: 17: API: Phenotype.API is not available on this device. Connection failed with: ConnectionResult{statusCode=DEVELOPER_ERROR, resolution=null, message=null}
+W/CondFlagRegistrar(11530): 	at emou.a(:com.google.android.gms@244738038@24.47.38 (260800-705893532):13)
+W/CondFlagRegistrar(11530): 	at ffxk.d(:com.google.android.gms@244738038@24.47.38 (260800-705893532):3)
+W/CondFlagRegistrar(11530): 	at ffxm.run(:com.google.android.gms@244738038@24.47.38 (260800-705893532):130)
+W/CondFlagRegistrar(11530): 	at ffzf.execute(:com.google.android.gms@244738038@24.47.38 (260800-705893532):1)
+W/CondFlagRegistrar(11530): 	at ffxn.h(:com.google.android.gms@244738038@24.47.38 (260800-705893532):1)
+W/CondFlagRegistrar(11530): 	at ffxn.l(:com.google.android.gms@244738038@24.47.38 (260800-705893532):101)
+W/CondFlagRegistrar(11530): 	at ffxn.p(:com.google.android.gms@244738038@24.47.38 (260800-705893532):19)
+W/CondFlagRegistrar(11530): 	at eeqt.hz(:com.google.android.gms@244738038@24.47.38 (260800-705893532):35)
+W/CondFlagRegistrar(11530): 	at dtzi.run(:com.google.android.gms@244738038@24.47.38 (260800-705893532):14)
+W/CondFlagRegistrar(11530): 	at ffzf.execute(:com.google.android.gms@244738038@24.47.38 (260800-705893532):1)
+W/CondFlagRegistrar(11530): 	at dtzj.b(:com.google.android.gms@244738038@24.47.38 (260800-705893532):18)
+W/CondFlagRegistrar(11530): 	at dtzy.b(:com.google.android.gms@244738038@24.47.38 (260800-705893532):36)
+W/CondFlagRegistrar(11530): 	at duaa.c(:com.google.android.gms@244738038@24.47.38 (260800-705893532):26)
+W/CondFlagRegistrar(11530): 	at angn.c(:com.google.android.gms@244738038@24.47.38 (260800-705893532):9)
+W/CondFlagRegistrar(11530): 	at anjd.q(:com.google.android.gms@244738038@24.47.38 (260800-705893532):48)
+W/CondFlagRegistrar(11530): 	at anjd.d(:com.google.android.gms@244738038@24.47.38 (260800-705893532):10)
+W/CondFlagRegistrar(11530): 	at anjd.g(:com.google.android.gms@244738038@24.47.38 (260800-705893532):211)
+W/CondFlagRegistrar(11530): 	at anjd.onConnectionFailed(:com.google.android.gms@244738038@24.47.38 (260800-705893532):2)
+W/CondFlagRegistrar(11530): 	at anjf.run(:com.google.android.gms@244738038@24.47.38 (260800-705893532):82)
+W/CondFlagRegistrar(11530): 	at android.os.Handler.handleCallback(Handler.java:959)
+W/CondFlagRegistrar(11530): 	at android.os.Handler.dispatchMessage(Handler.java:100)
+W/CondFlagRegistrar(11530): 	at buhu.mv(:com.google.android.gms@244738038@24.47.38 (260800-705893532):1)
+W/CondFlagRegistrar(11530): 	at buhu.dispatchMessage(:com.google.android.gms@244738038@24.47.38 (260800-705893532):5)
+W/CondFlagRegistrar(11530): 	at android.os.Looper.loopOnce(Looper.java:232)
+W/CondFlagRegistrar(11530): 	at android.os.Looper.loop(Looper.java:317)
+W/CondFlagRegistrar(11530): 	at android.os.HandlerThread.run(HandlerThread.java:85)
+W/CondFlagRegistrar(11530): Caused by: anff: 17: API: Phenotype.API is not available on this device. Connection failed with: ConnectionResult{statusCode=DEVELOPER_ERROR, resolution=null, message=null}
+W/CondFlagRegistrar(11530): 	at aobi.a(:com.google.android.gms@244738038@24.47.38 (260800-705893532):15)
+W/CondFlagRegistrar(11530): 	at angq.a(:com.google.android.gms@244738038@24.47.38 (260800-705893532):1)
+W/CondFlagRegistrar(11530): 	at angn.c(:com.google.android.gms@244738038@24.47.38 (260800-705893532):5)
+W/CondFlagRegistrar(11530): 	... 12 more
+W/.example.planit(11530): Accessing hidden method Ldalvik/system/VMStack;->getStackClass2()Ljava/lang/Class; (unsupported, reflection, allowed)
+I/emoj.a  (11530): Unable to retrieve flag snapshot for com.google.android.gms.providerinstaller#com.google.android.gms, using defaults.
+W/.example.planit(11530): Accessing hidden method Ljava/security/spec/ECParameterSpec;->getCurveName()Ljava/lang/String; (unsupported, reflection, allowed)
+I/ProviderInstaller(11530): Installed default security provider GmsCore_OpenSSL
+D/TrafficStats(11530): tagSocket(202) with statsTag=0xffffffff, statsUid=-1
+W/.example.planit(11530): Accessing hidden field Ljava/net/Socket;->impl:Ljava/net/SocketImpl; (unsupported, reflection, allowed)
+W/.example.planit(11530): Accessing hidden method Ljava/security/spec/ECParameterSpec;->setCurveName(Ljava/lang/String;)V (unsupported, reflection, allowed)
+6
+W/Firestore(11530): (25.1.1) [WriteStream]: (e39e3d9) Stream closed with status: Status{code=NOT_FOUND, description=The database (default) does not exist for project planit-636a0 Please visit https://console.cloud.google.com/datastore/setup?project=planit-636a0 to add a Cloud Datastore or Cloud Firestore database. , cause=null}.
+E/GoogleApiManager(11530): Failed to get service from broker. 
+E/GoogleApiManager(11530): java.lang.SecurityException: Unknown calling package name 'com.google.android.gms'.
+E/GoogleApiManager(11530): 	at android.os.Parcel.createExceptionOrNull(Parcel.java:3242)
+E/GoogleApiManager(11530): 	at android.os.Parcel.createException(Parcel.java:3226)
+E/GoogleApiManager(11530): 	at android.os.Parcel.readException(Parcel.java:3209)
+E/GoogleApiManager(11530): 	at android.os.Parcel.readException(Parcel.java:3151)
+E/GoogleApiManager(11530): 	at aodp.a(:com.google.android.gms@244738038@24.47.38 (260800-705893532):36)
+E/GoogleApiManager(11530): 	at aobw.z(:com.google.android.gms@244738038@24.47.38 (260800-705893532):143)
+E/GoogleApiManager(11530): 	at anjf.run(:com.google.android.gms@244738038@24.47.38 (260800-705893532):54)
+E/GoogleApiManager(11530): 	at android.os.Handler.handleCallback(Handler.java:959)
+E/GoogleApiManager(11530): 	at android.os.Handler.dispatchMessage(Handler.java:100)
+E/GoogleApiManager(11530): 	at buhu.mv(:com.google.android.gms@244738038@24.47.38 (260800-705893532):1)
+E/GoogleApiManager(11530): 	at buhu.dispatchMessage(:com.google.android.gms@244738038@24.47.38 (260800-705893532):5)
+E/GoogleApiManager(11530): 	at android.os.Looper.loopOnce(Looper.java:232)
+E/GoogleApiManager(11530): 	at android.os.Looper.loop(Looper.java:317)
+E/GoogleApiManager(11530): 	at android.os.HandlerThread.run(HandlerThread.java:85)
+11
+W/Firestore(11530): (25.1.1) [WriteStream]: (e39e3d9) Stream closed with status: Status{code=NOT_FOUND, description=The database (default) does not exist for project planit-636a0 Please visit https://console.cloud.google.com/datastore/setup?project=planit-636a0 to add a Cloud Datastore or Cloud Firestore database. , cause=null}.
