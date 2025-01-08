@@ -2,13 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:planit/widgets/label_text.dart';
 import 'package:planit/widgets/text_input.dart';
 
+// ignore: must_be_immutable
 class InputField extends StatelessWidget {
-  const InputField(
+  InputField(
       {required this.label,
       required this.hint,
       required this.inputType,
       this.validator,
       this.onSaved,
+      this.onChanged,
       super.key});
 
   final String label;
@@ -16,6 +18,7 @@ class InputField extends StatelessWidget {
   final TextInputType inputType;
   final String? Function(String? value)? validator;
   final void Function(String? value)? onSaved;
+  void Function(String)? onChanged;
 
   @override
   Widget build(BuildContext context) {
@@ -28,6 +31,7 @@ class InputField extends StatelessWidget {
         ),
         TextInput(
           hintText: hint,
+          onChanged: onChanged,
           textInputType: inputType,
           validator: validator ?? (value) => null,
           onSaved: onSaved ?? (value) {},

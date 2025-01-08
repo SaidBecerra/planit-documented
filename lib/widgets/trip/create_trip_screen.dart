@@ -17,7 +17,7 @@ class CreateTripScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ScaffoldLayout(
-        body: SingleChildScrollView(
+      body: SingleChildScrollView(
       child: Padding(
         padding: const EdgeInsets.all(20),
         child: Column(
@@ -34,7 +34,7 @@ class CreateTripScreen extends StatelessWidget {
             const SizedBox(
               height: 30,
             ),
-            const InputField(
+            InputField(
               label: 'Name',
               hint: 'Ex: Friday Night Trip',
               inputType: TextInputType.name,

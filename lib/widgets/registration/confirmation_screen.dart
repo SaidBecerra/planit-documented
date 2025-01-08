@@ -5,6 +5,7 @@ import 'package:planit/widgets/main_button.dart';
 import 'package:planit/widgets/normal_text.dart';
 import 'package:planit/widgets/otp_square.dart';
 import 'package:planit/widgets/registration/food_dislikes_screen.dart';
+import 'package:planit/widgets/registration/profile_picture_screen.dart';
 import 'package:planit/widgets/scaffold_layout.dart';
 import 'package:planit/widgets/title_text.dart';
 
@@ -14,7 +15,7 @@ class ConfirmationScreen extends StatelessWidget {
 
   void _onContinue(BuildContext context) {
     Navigator.push(
-        context, MaterialPageRoute(builder: (ctx) => FoodDislikesScreen()));
+        context, MaterialPageRoute(builder: (ctx) => const ProfilePictureScreen()));
   }
 
   @override

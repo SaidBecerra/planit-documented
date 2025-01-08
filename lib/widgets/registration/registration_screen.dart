@@ -1,5 +1,9 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:planit/widgets/input_field.dart';
 import 'package:planit/widgets/label_text.dart';
@@ -56,6 +60,34 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
             'activityDislikes': {},
             'createdAt': FieldValue.serverTimestamp(),
           });
+
+          final storageRef = FirebaseStorage.instance
+              .ref()
+              .child('default_images')
+              .child('default_group.jpg');
+
+          String defaultImageUrl;
+          try {
+            defaultImageUrl = await storageRef.getDownloadURL();
+          } catch (error) {
+            final byteData = await rootBundle
+                .load('assets/icons/yoda.jpg');
+            final Uint8List fileData =
+                byteData.buffer.asUint8List(); 
+
+            await storageRef.putData(fileData); 
+            defaultImageUrl =
+                await storageRef.getDownloadURL();
+          }
+
+          await FirebaseFirestore.instance.collection('groupchats').add({
+            'name': _enteredName,
+            'imageUrl': defaultImageUrl,
+            'createdAt': Timestamp.now(),
+            'createdBy': userCredential.user!.uid,
+            'members': [userCredential.user!.uid],
+            'tripCount': 0,
+          });
         } on FirebaseAuthException catch (firestoreError) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text('Error saving user data: $firestoreError')),
@@ -77,9 +109,6 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
           SnackBar(content: Text(error.message ?? 'Authentication failed')),
         );
       }
-    }
-    if (!_form.currentState!.validate()) {
-      return;
     }
   }
 

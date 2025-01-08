@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:planit/widgets/groupchat/create_groupchat_screen.dart';
+import 'package:planit/widgets/groupchat/join_groupchat_screen.dart';
 
 class NewGroupChatBottomSheet extends StatelessWidget {
   const NewGroupChatBottomSheet({super.key});
@@ -20,8 +22,7 @@ class NewGroupChatBottomSheet extends StatelessWidget {
             title: 'New GroupChat',
             subtitle: 'Add a groupchat to be able to create trips',
             onTap: () {
-              // Handle new chat
-              Navigator.pop(context);
+              Navigator.push(context, MaterialPageRoute(builder: (ctx) => const CreateGroupchatScreen()));
             },
           ),
           _buildOption(
@@ -29,8 +30,7 @@ class NewGroupChatBottomSheet extends StatelessWidget {
             title: 'Join GroupChat',
             subtitle: 'Join the community around you',
             onTap: () {
-              // Handle new community
-              Navigator.pop(context);
+              Navigator.push(context, MaterialPageRoute(builder: (ctx) => const JoinGroupchatScreen()));
             },
           ),
           const SizedBox(height: 8),
