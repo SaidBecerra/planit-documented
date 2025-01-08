@@ -34,8 +34,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
 
   void _registerUser() async {
     if (_form.currentState!.validate()) {
-      print(
-          'AAAAAAAAAAAAAK;DJSENG;JKERNGF;JKERNGFERNG;KJERNG;KEJRNGVNJKVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV');
+
       _form.currentState!.save();
 
       try {
@@ -56,18 +55,14 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
             'activityDislikes': {},
             'createdAt': FieldValue.serverTimestamp(),
           });
-          print('Firestore document created successfully');
         } catch (firestoreError) {
-          print('Firestore error: $firestoreError');
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text('Error saving user data: $firestoreError')),
           );
-          // Optionally delete the Firebase Auth user if Firestore save fails
           await userCredential.user?.delete();
           return;
         }
 
-        print('Im here');
         Navigator.push(
           context,
           MaterialPageRoute(
