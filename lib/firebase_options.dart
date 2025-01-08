@@ -50,21 +50,19 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyBSNDqERLnuwaK7DkXXXFPGJBHx3nsfUP8',
-    appId: '1:391875349362:android:09e49518f53b7be147abeb',
-    messagingSenderId: '391875349362',
-    projectId: 'planit-636a0',
-    storageBucket: 'planit-636a0.firebasestorage.app',
+    apiKey: 'AIzaSyBpy9wmEqHYnR1YCQB0JtGmw9cZ1LZVxqM',
+    appId: '1:614942520389:android:647dc52ba045a9d127df2c',
+    messagingSenderId: '614942520389',
+    projectId: 'planit-database',
+    storageBucket: 'planit-database.firebasestorage.app',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyCxqN-AStOFWsdOoClHgUa1f0vABP1c5U0',
-    appId: '1:391875349362:ios:d071d0d854d273f547abeb',
-    messagingSenderId: '391875349362',
-    projectId: 'planit-636a0',
-    storageBucket: 'planit-636a0.firebasestorage.app',
-    androidClientId: '391875349362-kqbjs5qckvvqu0pgmpj7na1auagp9i67.apps.googleusercontent.com',
-    iosClientId: '391875349362-1gqihi2kj5aquico8n7i44iqkps0ia6n.apps.googleusercontent.com',
+    apiKey: 'AIzaSyAR5PD454yInfFcG-DvXoQNI--xHVJ9a9I',
+    appId: '1:614942520389:ios:1e3488a914f16cd227df2c',
+    messagingSenderId: '614942520389',
+    projectId: 'planit-database',
+    storageBucket: 'planit-database.firebasestorage.app',
     iosBundleId: 'com.example.planit',
   );
 

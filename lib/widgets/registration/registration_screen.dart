@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:planit/widgets/label_text.dart';
@@ -13,7 +14,6 @@ import 'package:planit/widgets/title_text.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 final _firebase = FirebaseAuth.instance;
-
 class RegistrationScreen extends StatefulWidget {
   const RegistrationScreen({super.key});
 
@@ -24,52 +24,76 @@ class RegistrationScreen extends StatefulWidget {
 }
 
 class _RegistrationScreenState extends State<RegistrationScreen> {
-  final _phoneNumberController = TextEditingController();
   final _form = GlobalKey<FormState>();
-  String? _verficationID;
+  final _phoneNumberController = TextEditingController();
 
   var _enteredEmail = '';
   var _enteredName = '';
   var _enteredPassword = '';
   var _enteredPhoneNumber = '';
-  
-  void _sendCodeToPhoneNumber() async{
-    if (_form.currentState!.validate()){
-      await FirebaseAuth.instance.verifyPhoneNumber(
-        phoneNumber: _enteredPhoneNumber,
-        verificationCompleted: (PhoneAuthCredential credential){
 
-        },
-        verificationFailed: (FirebaseAuthException e){
+  void _registerUser() async {
+    if (_form.currentState!.validate()) {
+      print(
+          'AAAAAAAAAAAAAK;DJSENG;JKERNGF;JKERNGFERNG;KJERNG;KEJRNGVNJKVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV');
+      _form.currentState!.save();
+
+      try {
+        final userCredential = await _firebase.createUserWithEmailAndPassword(
+          email: _enteredEmail,
+          password: _enteredPassword,
+        );
+
+        try {
+          await FirebaseFirestore.instance
+              .collection('users')
+              .doc(userCredential.user!.uid)
+              .set({
+            'name': _enteredName,
+            'email': _enteredEmail,
+            'phoneNumber': _enteredPhoneNumber,
+            'foodDislikes': {},
+            'activityDislikes': {},
+            'createdAt': FieldValue.serverTimestamp(),
+          });
+          print('Firestore document created successfully');
+        } catch (firestoreError) {
+          print('Firestore error: $firestoreError');
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Verification failed: ${e.message}'))
+            SnackBar(content: Text('Error saving user data: $firestoreError')),
           );
-        },
-        codeSent: (String verficationID, int? resendToken) {
-          _verficationID = verficationID;
-        },
-        codeAutoRetrievalTimeout: (String verficationID){
-          _verficationID = verficationID;
+          // Optionally delete the Firebase Auth user if Firestore save fails
+          await userCredential.user?.delete();
+          return;
         }
-      );
-    }
-  }
 
-  void _onPhoneVerification(BuildContext context) {
-    Navigator.push(
-        context,
-        MaterialPageRoute(
+        print('Im here');
+        Navigator.push(
+          context,
+          MaterialPageRoute(
             builder: (ctx) =>
-                ConfirmationScreen(phoneNumber: _phoneNumberController.text)));
+                ConfirmationScreen(phoneNumber: _enteredPhoneNumber),
+          ),
+        );
+      } on FirebaseAuthException catch (error) {
+        ScaffoldMessenger.of(context).clearSnackBars();
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(error.message ?? 'Authentication failed')),
+        );
+      }
+    }
+    if (!_form.currentState!.validate()) {
+      return;
+    }
   }
 
   void _onLogin(BuildContext context) {
     Navigator.push(
         context, MaterialPageRoute(builder: (ctx) => const LoginScreen()));
-  } 
+  }
 
-  String? nameValidator(String? value){
-    if (value == null || value.trim().isEmpty){
+  String? nameValidator(String? value) {
+    if (value == null || value.trim().isEmpty) {
       return 'Name cannot be empty';
     }
     if (!RegExp(r'^[a-zA-Z\s]+$').hasMatch(value)) {
@@ -79,54 +103,35 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
   }
 
   String? emailValidator(String? value) {
-  if (value == null || value.isEmpty) {
-    return 'Email cannot be empty';
+    if (value == null || value.isEmpty) {
+      return 'Email cannot be empty';
+    }
+    if (!RegExp(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$')
+        .hasMatch(value)) {
+      return 'Please enter a valid email address';
+    }
+    return null;
   }
-  if (!RegExp(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$').hasMatch(value)) {
-    return 'Please enter a valid email address';
-  }
-  return null;
-}
 
-String? phoneNumberValidator(String? value) {
-  if (value == null || value.isEmpty) {
-    return 'Phone number cannot be empty';
+  String? passwordValidator(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Password cannot be empty';
+    }
+    if (value.length < 6) {
+      return 'Password must be at least 6 characters long';
+    }
+    return null;
   }
-  if (!RegExp(r'^[0-9]{10}$').hasMatch(value)) {
-    return 'Please enter a valid 10-digit phone number';
-  }
-  return null;
-}
 
-String? passwordValidator(String? value) {
-  if (value == null || value.isEmpty) {
-    return 'Password cannot be empty';
+  String? phoneNumberValidator(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Phone number cannot be empty';
+    }
+    if (!RegExp(r'^[0-9]{10}$').hasMatch(value)) {
+      return 'Please enter a valid 10-digit phone number';
+    }
+    return null;
   }
-  if (value.length < 6) {
-    return 'Password must be at least 6 characters long';
-  }
-  return null;
-}
-
-void _register() async {
-  final isValid = _form.currentState!.validate();
-
-  if (!isValid){
-    return;
-  }
-  _form.currentState!.save();
-  try {
-    final UserCredential = await _firebase.createUserWithEmailAndPassword(
-      email: _enteredEmail,
-      password: _enteredPassword
-    );
-  } on FirebaseAuthException catch(error) {
-    ScaffoldMessenger.of(context).clearSnackBars();
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(error.message ?? 'Authentication failed')));
-  }
-}
-
-
 
   @override
   void dispose() {
@@ -191,14 +196,14 @@ void _register() async {
                   height: 5,
                 ),
                 TextInput(
-                    controller: _phoneNumberController,
-                    textInputType: TextInputType.phone,
-                    hintText: 'Ex: 5147714587',
-                    validator: phoneNumberValidator,
-                    onSaved: (value) {
-                      _enteredPhoneNumber = value!;
-                    },
-                  ),
+                  controller: _phoneNumberController,
+                  textInputType: TextInputType.phone,
+                  hintText: 'Ex: 5147714587',
+                  validator: phoneNumberValidator,
+                  onSaved: (value) {
+                    _enteredPhoneNumber = value!;
+                  },
+                ),
                 const SizedBox(
                   height: 15,
                 ),
@@ -211,7 +216,7 @@ void _register() async {
                 ),
                 PasswordField(
                   validator: passwordValidator,
-                  onSaved: (value){
+                  onSaved: (value) {
                     _enteredPassword = value!;
                   },
                 ),
@@ -222,14 +227,11 @@ void _register() async {
                   width: double.infinity,
                   height: 55,
                   child: MainButton(
-                      text: 'Register',
-                      backgroundColor: Colors.black,
-                      foregroundColor: Colors.white,
-                      onTap: () {
-                        _sendCodeToPhoneNumber;
-                        _register;
-                        _onPhoneVerification(context);
-                      }),
+                    text: 'Register',
+                    backgroundColor: Colors.black,
+                    foregroundColor: Colors.white,
+                    onTap: _registerUser,
+                  ),
                 ),
                 const SizedBox(
                   height: 10,
