@@ -56,7 +56,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
             'activityDislikes': {},
             'createdAt': FieldValue.serverTimestamp(),
           });
-        } catch (firestoreError) {
+        } on FirebaseAuthException catch (firestoreError) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text('Error saving user data: $firestoreError')),
           );

@@ -76,8 +76,9 @@ class _LoginScreenState extends State<LoginScreen> {
     }
     _form.currentState!.save();
     try {
-      final UserCredential = await _firebase.signInWithEmailAndPassword(
+      final userCredential = await _firebase.signInWithEmailAndPassword(
           email: _enteredEmail, password: _enteredPassword);
+      _onHome(context);
     } on FirebaseAuthException catch (error) {
       ScaffoldMessenger.of(context).clearSnackBars();
       ScaffoldMessenger.of(context).showSnackBar(
@@ -108,6 +109,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   height: 30,
                 ),
                 InputField(
+                  validator: emailValidator,
                   label: 'Email',
                   hint: 'Ex: rosaparks@gmail.com',
                   inputType: TextInputType.emailAddress,
@@ -138,10 +140,8 @@ class _LoginScreenState extends State<LoginScreen> {
                       text: 'Log in',
                       backgroundColor: Colors.black,
                       foregroundColor: Colors.white,
-                      onTap: () {
-                        login;
-                        _onHome(context);
-                      }),
+                      onTap: login
+                  ),
                 ),
                 const SizedBox(
                   height: 10,
