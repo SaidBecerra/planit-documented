@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:planit/widgets/main_button.dart';
 import 'package:planit/widgets/scaffold_layout.dart';
@@ -193,6 +194,7 @@ class _CreateTripScreenState extends State<CreateTripScreen> {
       }
 
       try {
+        final currentUser = FirebaseAuth.instance.currentUser;
         final docRef =
             await FirebaseFirestore.instance.collection('trips').add({
           'name': _finalName,
@@ -203,6 +205,7 @@ class _CreateTripScreenState extends State<CreateTripScreen> {
           'blueprint': [],
           'lastUpdated': Timestamp.now(),
           'groupchat_id': widget.groupchat_id,
+          'created_by': currentUser!.uid,
         });
 
         print('Created document with ID: ${docRef.id}');
