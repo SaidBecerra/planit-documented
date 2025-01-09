@@ -13,7 +13,6 @@ import 'package:planit/widgets/password_field.dart';
 import 'package:planit/widgets/registration/confirmation_screen.dart';
 import 'package:planit/widgets/scaffold_layout.dart';
 import 'package:planit/widgets/terms_text.dart';
-import 'package:planit/widgets/text_input.dart';
 import 'package:planit/widgets/normal_text.dart';
 import 'package:planit/widgets/title_text.dart';
 import 'package:firebase_auth/firebase_auth.dart';

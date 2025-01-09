@@ -40,6 +40,7 @@ dependencies:
   cloud_firestore: ^5.6.1
   firebase_storage: ^12.4.0
   image_picker: ^1.1.2
+  http: ^1.2.2
 
 dev_dependencies:
   flutter_test:
@@ -72,6 +73,7 @@ flutter:
     - assets/images/user.png
     - assets/images/home.png
     - assets/icons/yoda.jpg
+    - assets/images/pizza.jpg
 
 
 
