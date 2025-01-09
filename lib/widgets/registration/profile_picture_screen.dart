@@ -77,35 +77,31 @@ class ProfilePictureScreenState extends State<ProfilePictureScreen> {
         padding: const EdgeInsets.all(20.0),
         child: Form(
           key: _form,
-          child: Column(
-            children: [
-              SingleChildScrollView(
-                child: Expanded(
-                  child: Container(
-                    decoration: const BoxDecoration(
-                      color: Color.fromARGB(255, 248, 214, 255),
-                      borderRadius: BorderRadius.all(
-                        Radius.circular(40),
-                      ),
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                Container(
+                  decoration: const BoxDecoration(
+                    color: Color.fromARGB(255, 248, 214, 255),
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(40),
                     ),
-                    child: Padding(
-                      padding: const EdgeInsets.only(top: 20),
-                      child: Center(
-                        child: ProfilePicturePicker(
-                          onPickedImage: (pickedImage) {
-                            _selectedImage = pickedImage;
-                          },
-                        ),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 20),
+                    child: Center(
+                      child: ProfilePicturePicker(
+                        onPickedImage: (pickedImage) {
+                          _selectedImage = pickedImage;
+                        },
                       ),
                     ),
                   ),
                 ),
-              ),
-              const SizedBox(
-                height: 30,
-              ),
-              SingleChildScrollView(
-                child: Padding(
+                const SizedBox(
+                  height: 30,
+                ),
+                Padding(
                   padding: const EdgeInsets.only(top: 30, bottom: 20),
                   child: Column(
                     children: [
@@ -131,8 +127,8 @@ class ProfilePictureScreenState extends State<ProfilePictureScreen> {
                     ],
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

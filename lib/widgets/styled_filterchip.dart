@@ -31,8 +31,8 @@ class StyledFilterChip extends StatelessWidget {
       ),
       selected: selected,
       onSelected: onSelected,
-      selectedColor: Color(0xFFA294F9), // Light blue color when selected
-      backgroundColor: Color(0xFF2C2C2C), // Dark gray background
+      selectedColor: const Color(0xFFA294F9), // Light blue color when selected
+      backgroundColor: const Color(0xFF2C2C2C), // Dark gray background
       //checkmarkColor: Colors.transparent,
       showCheckmark: false,
       shape: RoundedRectangleBorder(
