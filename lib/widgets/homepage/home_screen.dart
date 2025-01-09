@@ -59,7 +59,7 @@ class HomeScreenState extends State<HomeScreen> {
                       return GroupChat(
                         users: [currentUser],
                         name: data['name'] as String,
-                        tripCount: data['tripCount'] as int,
+                        tripCount: (data['trips'] as List?)?.length ?? 0,
                         imageUrl: data['imageUrl'] as String,
                         groupchatID: doc.id,
                       );
