@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
-class ScaffoldLayout extends StatelessWidget{
-  const ScaffoldLayout({
-    this.backgroundColor,
-    this.floatingActionButton,
-    this.actions,
-    required this.body,
-    super.key
-  });
+class ScaffoldLayout extends StatelessWidget {
+  const ScaffoldLayout(
+      {this.backgroundColor,
+      this.floatingActionButton,
+      this.actions,
+      required this.body,
+      super.key});
   final Widget body;
   final Color? backgroundColor;
   final FloatingActionButton? floatingActionButton;
@@ -18,6 +18,7 @@ class ScaffoldLayout extends StatelessWidget{
     return Scaffold(
       floatingActionButton: floatingActionButton,
       appBar: AppBar(
+        elevation: 0,
         leading: Container(
           margin: const EdgeInsets.only(left: 16, top: 8, bottom: 8),
           decoration: const BoxDecoration(
@@ -40,7 +41,9 @@ class ScaffoldLayout extends StatelessWidget{
             ),
             onPressed: () => Navigator.pop(context),
           ),
-        ),actions: actions,
+        ),
+        actions: actions,
+        systemOverlayStyle: SystemUiOverlayStyle.dark,
       ),
       body: body,
     );

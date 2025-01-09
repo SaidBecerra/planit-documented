@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:planit/widgets/homepage/custom_navigation_bar.dart';
 import 'package:planit/widgets/main_button.dart';
+import 'package:planit/widgets/scaffold_layout.dart';
 import 'package:planit/widgets/title_text.dart';
 
 class InviteCodeScreen extends StatefulWidget {
@@ -10,25 +11,23 @@ class InviteCodeScreen extends StatefulWidget {
   const InviteCodeScreen({required this.groupchatID, super.key});
 
   @override
-  State<InviteCodeScreen> createState() {
-    return InviteCodeScreenState();
-  }
+  State<InviteCodeScreen> createState() => InviteCodeScreenState();
 }
 
 class InviteCodeScreenState extends State<InviteCodeScreen> {
-    String _copyButtonText = 'Copy';  
+  String _copyButtonText = 'Copy';
+
+  void _copy() {
+    final value = ClipboardData(text: widget.groupchatID);
+    Clipboard.setData(value);
+    setState(() {
+      _copyButtonText = 'Copied';
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-    void copy() {
-      final value = ClipboardData(text: widget.groupchatID);
-      Clipboard.setData(value);
-      setState(() {
-      _copyButtonText = 'Copied';
-    });
-    }
-
-    return Scaffold(
+    return ScaffoldLayout(
       body: Padding(
         padding: const EdgeInsets.all(20.0),
         child: Column(
@@ -45,7 +44,7 @@ class InviteCodeScreenState extends State<InviteCodeScreen> {
                   Container(
                     padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
-                      color: Colors.white, 
+                      color: Colors.white,
                       borderRadius: BorderRadius.circular(8),
                       border: Border.all(
                         color: const Color.fromARGB(255, 35, 34, 34),
@@ -54,7 +53,7 @@ class InviteCodeScreenState extends State<InviteCodeScreen> {
                     ),
                     child: SelectableText(
                       widget.groupchatID,
-                      style: GoogleFonts.lato(fontSize: 30, color: Colors.black),
+                      style: GoogleFonts.lato(fontSize: 29, color: Colors.black),
                       textAlign: TextAlign.center,
                     ),
                   ),
@@ -66,7 +65,7 @@ class InviteCodeScreenState extends State<InviteCodeScreen> {
                       text: _copyButtonText,
                       backgroundColor: Colors.black,
                       foregroundColor: Colors.white,
-                      onTap: copy,
+                      onTap: _copy,
                     ),
                   ),
                 ],
@@ -74,23 +73,20 @@ class InviteCodeScreenState extends State<InviteCodeScreen> {
             ),
             const Spacer(),
             Padding(
-              padding: const EdgeInsets.only(bottom: 20),
-              child: SizedBox(
-                width: double.infinity,
-                child: MainButton(
-                  text: 'Done',
-                  backgroundColor: Colors.black,
-                  foregroundColor: Colors.white,
-                  onTap: () {
-                    Navigator.pushAndRemoveUntil(
-                      context,
-                      MaterialPageRoute(
-                        builder: (ctx) => const CustomNavigatonBar(),
-                      ),
-                      (route) => false,
-                    );
-                  },
-                ),
+              padding: const EdgeInsets.only(bottom: 30),
+              child: MainButton(
+                text: 'Done',
+                backgroundColor: Colors.black,
+                foregroundColor: Colors.white,
+                onTap: () {
+                  Navigator.pushAndRemoveUntil(
+                        context,
+                        MaterialPageRoute(
+                          builder: (ctx) => const CustomNavigatonBar(),
+                        ),
+                        (route) => false,
+                      );
+                },
               ),
             ),
           ],

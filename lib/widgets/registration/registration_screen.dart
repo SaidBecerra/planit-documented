@@ -53,8 +53,8 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
             'name': _enteredName,
             'email': _enteredEmail,
             'phoneNumber': _enteredPhoneNumber,
-            'foodDislikes': {},
-            'activityDislikes': {},
+            'foodDislikes': [],
+            'activityDislikes': [],
             'createdAt': FieldValue.serverTimestamp(),
           });
 
