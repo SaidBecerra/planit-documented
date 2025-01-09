@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:planit/widgets/groupchat/invite_code_screen.dart';
+import 'package:planit/widgets/groupchat/view_members.dart';
 import 'package:planit/widgets/main_button.dart';
 import 'package:planit/widgets/scaffold_layout.dart';
 import 'package:planit/widgets/trip/create_trip_screen.dart';
@@ -24,7 +24,7 @@ class GroupchatScreen extends StatelessWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (ctx) => InviteCodeScreen(groupchatID: groupchatID),
+                  builder: (ctx) => ViewMembersScreen(groupchatID: groupchatID),
                 )
               );
             },
