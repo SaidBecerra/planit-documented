@@ -31,23 +31,7 @@ class _CustomNavigationBarState extends State<CustomNavigatonBar> {
     return Scaffold(
       appBar: AppBar(
           title: Text(currentIndex == 0 ? 'Home' : 'Profile'),
-          actions: currentIndex == 1
-              ? [
-                  IconButton(
-                    onPressed: () {
-                      FirebaseAuth.instance.signOut();
-                      Navigator.pushAndRemoveUntil(
-                        context,
-                        MaterialPageRoute(
-                          builder: (ctx) => const WelcomeScreen(),
-                        ),
-                        (route) => false,
-                      );
-                    },
-                    icon: const Icon(Icons.exit_to_app),
-                  )
-                ]
-              : null),
+      ),
       bottomNavigationBar: Container(
         decoration: const BoxDecoration(
           color: Colors.white,

@@ -9,9 +9,11 @@ class GroupChat extends StatelessWidget {
       required this.imageUrl, 
       required this.name,
       required this.tripCount,
+      required this.groupchatID,
       super.key});
 
   final String name;
+  final String groupchatID;
   final List<User?> users;
   final int tripCount;
   final String imageUrl;
@@ -20,7 +22,7 @@ class GroupChat extends StatelessWidget {
   Widget build(BuildContext context) {
     void onGroupChat(BuildContext context) {
       Navigator.push(context,
-          MaterialPageRoute(builder: (ctx) => const GroupchatScreen()));
+          MaterialPageRoute(builder: (ctx) => GroupchatScreen(groupchatID: groupchatID,)));
     }
 
     return GestureDetector(

@@ -1,25 +1,23 @@
 import 'package:flutter/material.dart';
 
-class ScaffoldLayout extends StatelessWidget {
+class ScaffoldLayout extends StatelessWidget{
   const ScaffoldLayout({
     this.backgroundColor,
     this.floatingActionButton,
+    this.actions,
     required this.body,
     super.key
   });
   final Widget body;
   final Color? backgroundColor;
   final FloatingActionButton? floatingActionButton;
+  final List<Widget>? actions;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xfffef7ff),
       floatingActionButton: floatingActionButton,
       appBar: AppBar(
-        backgroundColor: const Color(0xfffef7ff),
-        scrolledUnderElevation: 0, // Add this to prevent elevation change
-        surfaceTintColor: Colors.transparent, // Add this to prevent tint color
         leading: Container(
           margin: const EdgeInsets.only(left: 16, top: 8, bottom: 8),
           decoration: const BoxDecoration(
@@ -42,7 +40,7 @@ class ScaffoldLayout extends StatelessWidget {
             ),
             onPressed: () => Navigator.pop(context),
           ),
-        ),
+        ),actions: actions,
       ),
       body: body,
     );

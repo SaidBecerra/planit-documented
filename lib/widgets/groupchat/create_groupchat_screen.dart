@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:planit/widgets/groupchat/invite_code_screen.dart';
 import 'package:planit/widgets/groupchat_image_picker.dart';
 import 'package:planit/widgets/input_field.dart';
 import 'package:planit/widgets/label_text.dart';
@@ -40,7 +41,7 @@ class CreateGroupchatScreenState extends State<CreateGroupchatScreen> {
       await storageRef.putFile(_selectedImage!);
       final imageUrl = await storageRef.getDownloadURL();
       
-      await FirebaseFirestore.instance.collection('groupchats').add({
+      final groupchatRef = await FirebaseFirestore.instance.collection('groupchats').add({
         'name': _groupchatName,
         'imageUrl': imageUrl,
         'createdAt': Timestamp.now(),
@@ -49,8 +50,16 @@ class CreateGroupchatScreenState extends State<CreateGroupchatScreen> {
         'tripCount': 0,
       });
 
+    final groupchatID = groupchatRef.id;
+
       if (context.mounted) {
-      Navigator.pop(context);
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(
+            builder: (ctx) =>  InviteCodeScreen(groupchatID: groupchatID,),
+          ),
+          (route) => false,
+        );
       }
     } on FirebaseAuthException catch (error){
       ScaffoldMessenger.of(context).clearSnackBars();

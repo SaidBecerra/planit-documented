@@ -4,7 +4,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:planit/widgets/main_button.dart';
 import 'package:planit/widgets/normal_text.dart';
 import 'package:planit/widgets/otp_square.dart';
-import 'package:planit/widgets/registration/food_dislikes_screen.dart';
 import 'package:planit/widgets/registration/profile_picture_screen.dart';
 import 'package:planit/widgets/scaffold_layout.dart';
 import 'package:planit/widgets/title_text.dart';

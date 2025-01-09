@@ -5,12 +5,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:planit/widgets/input_field.dart';
-import 'package:planit/widgets/label_text.dart';
 import 'package:planit/widgets/main_button.dart';
 import 'package:planit/widgets/profile_picture_picker.dart';
 import 'package:planit/widgets/registration/food_dislikes_screen.dart';
 import 'package:planit/widgets/scaffold_layout.dart';
-import 'package:planit/widgets/text_input.dart';
 
 class ProfilePictureScreen extends StatefulWidget {
   const ProfilePictureScreen({super.key});

@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:planit/widgets/groupchat/invite_code_screen.dart';
 import 'package:planit/widgets/main_button.dart';
 import 'package:planit/widgets/scaffold_layout.dart';
 import 'package:planit/widgets/trip/create_trip_screen.dart';
 
 class GroupchatScreen extends StatelessWidget {
-  const GroupchatScreen({super.key});
+  const GroupchatScreen({required this.groupchatID, super.key});
+    final String groupchatID; 
 
   void _onCreateTrip(BuildContext context) {
     Navigator.push(
@@ -14,6 +16,22 @@ class GroupchatScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ScaffoldLayout(
+      actions: [
+        const Spacer(),
+        SizedBox(
+          child: IconButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (ctx) => InviteCodeScreen(groupchatID: groupchatID),
+                )
+              );
+            },
+            icon: const Icon(Icons.add_circle_outline_rounded)
+          ),
+        )
+      ],
       body: Padding(
         padding: const EdgeInsets.all(20),
         child: Column(
