@@ -179,7 +179,8 @@ class _CreateTripScreenState extends State<CreateTripScreen> {
     if (_form.currentState!.validate()) {
       _form.currentState!.save();
 
-      print('Latitude: $_finalLatitude, Longitude: $_finalLongitude, Radius: $_radius');
+      print(
+          'Latitude: $_finalLatitude, Longitude: $_finalLongitude, Radius: $_radius');
 
       if (_finalLatitude == null || _finalLongitude == null) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -201,6 +202,7 @@ class _CreateTripScreenState extends State<CreateTripScreen> {
           'radius': _radius,
           'blueprint': [],
           'lastUpdated': Timestamp.now(),
+          'groupchat_id': widget.groupchat_id,
         });
 
         print('Created document with ID: ${docRef.id}');

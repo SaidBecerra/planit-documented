@@ -66,6 +66,8 @@ class ActivityDislikeScreen extends StatelessWidget {
     'Writing': false,
   };
 
+  
+
   @override
   Widget build(BuildContext context) {
     return ScaffoldLayout(

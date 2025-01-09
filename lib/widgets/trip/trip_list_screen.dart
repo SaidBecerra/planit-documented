@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:planit/widgets/homepage/custom_navigation_bar.dart';
 import 'dart:convert';
-import 'package:planit/widgets/normal_text.dart';
 import 'package:planit/widgets/scaffold_layout.dart';
 import 'package:planit/widgets/title_text.dart';
 import 'package:planit/widgets/trip/trip_option.dart';
@@ -18,249 +18,277 @@ class TripListScreen extends StatefulWidget {
 }
 
 class _TripListScreenState extends State<TripListScreen> {
-  List<Map<String, dynamic>> restaurants = [];
+  static const apiKey = 'AIzaSyCPT_9MfN37x1XCG-mzbBQTgPgxqgPsmD8';
+  static const _foodTypes = [
+    'Asian', 'Mexican', 'Italian', 'American', 'Indian', 'Mediterranean',
+    'French', 'Greek', 'Thai', 'Japanese', 'Chinese', 'Korean', 'Vietnamese',
+    'Turkish', 'Spanish', 'Middle Eastern', 'Brazilian', 'Caribbean',
+    'Vegetarian/Vegan', 'Seafood', 'BBQ',
+  ];
+  
+  static const _activityTypes = [
+    'Hiking', 'Swimming', 'Cycling', 'Running', 'Yoga', 'Photography',
+    'Painting', 'Reading', 'Gaming', 'Cooking', 'Gardening', 'Dancing',
+    'Meditation', 'Surfing', 'Rock Climbing', 'Tennis', 'Basketball',
+    'Camping', 'Traveling', 'Music', 'Writing',
+  ];
+
+  List<Map<String, dynamic>> places = [];
+  List<Map<String, dynamic>> blueprints = [];
   bool isLoading = true;
-  bool isLoadingMore = false;
-  String? nextPageToken;
-  final apiKey = 'AIzaSyCPT_9MfN37x1XCG-mzbBQTgPgxqgPsmD8';
-  final ScrollController _scrollController = ScrollController();
-  String? _baseUrl;
+  String tripLocation = '';
+  String tripRadius = '';
+  List<String> dislikes = [];
 
   @override
   void initState() {
     super.initState();
-    _scrollController.addListener(_scrollListener);
-    fetchRestaurants();
+    _initializeData();
   }
 
-  @override
-  void dispose() {
-    _scrollController.dispose();
-    super.dispose();
-  }
-
-  void _scrollListener() {
-    if (_scrollController.position.pixels >= 
-        _scrollController.position.maxScrollExtent * 0.8 &&
-        !isLoadingMore &&
-        nextPageToken != null) {
-      _loadMore();
-    }
-  }
-
-  Future<void> _loadMore() async {
-    if (nextPageToken == null || _baseUrl == null) return;
-
-    setState(() {
-      isLoadingMore = true;
-    });
-
+  Future<void> _initializeData() async {
     try {
-      // Wait for a short delay as required by Places API
-      await Future.delayed(const Duration(seconds: 2));
-      
-      final url = Uri.parse('$_baseUrl&pagetoken=$nextPageToken');
-      final response = await http.get(url);
-      final data = json.decode(response.body) as Map<String, dynamic>;
+      // Fetch trip data
+      final tripDoc = await FirebaseFirestore.instance
+          .collection('trips')
+          .doc(widget.tripId)
+          .get();
 
-      if (data['status'] == 'OK') {
-        final results = (data['results'] as List).map((result) {
-          final restaurant = Map<String, dynamic>.from(result);
+      if (!tripDoc.exists) throw Exception('Trip not found');
+      final tripData = tripDoc.data()!;
 
-          String? photoReference;
-          if (restaurant['photos'] != null &&
-              (restaurant['photos'] as List).isNotEmpty) {
-            photoReference = (restaurant['photos'] as List)
-                .first['photo_reference'] as String?;
-          }
+      // Extract trip details
+      tripLocation = '${tripData['latitude']},${tripData['longitude']}';
+      tripRadius = (tripData['radius'] * 1000).round().toString();
+      blueprints = List<Map<String, dynamic>>.from(tripData['blueprint'] ?? []);
 
-          final photoUrl = photoReference != null
-              ? getPhotoUrl(photoReference)
-              : 'assets/images/pizza.jpg';
-
-          restaurant['photoUrl'] = photoUrl;
-          return restaurant;
-        }).toList();
-
-        setState(() {
-          restaurants.addAll(results);
-          nextPageToken = data['next_page_token'];
-          isLoadingMore = false;
-        });
-      } else {
-        setState(() {
-          isLoadingMore = false;
-          nextPageToken = null;
-        });
+      if (blueprints.isEmpty || widget.index >= blueprints.length) {
+        throw Exception('Invalid blueprint data');
       }
+
+      // Get group chat members
+      final chatId = tripData['groupchat_id'] as String?;
+      if (chatId == null) throw Exception('No groupchat found');
+
+      final groupDoc = await FirebaseFirestore.instance
+          .collection('groupchats')
+          .doc(chatId)
+          .get();
+
+      if (!groupDoc.exists) throw Exception('Groupchat not found');
+      final memberIds = List<String>.from(groupDoc.data()!['members'] ?? []);
+
+      // Fetch and combine member dislikes
+      final memberDocs = await Future.wait(
+        memberIds.map((id) => FirebaseFirestore.instance
+            .collection('users')
+            .doc(id)
+            .get())
+      );
+
+      final isFood = blueprints[widget.index]['activity']['type'] == 'ActivityType.food';
+      final dislikeField = isFood ? 'foodDislikes' : 'activityDislikes';
+      
+      dislikes = memberDocs
+          .where((doc) => doc.exists)
+          .expand((doc) => List<String>.from(doc.data()?[dislikeField] ?? []))
+          .toSet()
+          .toList();
+
+      // Fetch places
+      await _fetchPlaces(isFood);
     } catch (e) {
-      print('Error loading more results: $e');
-      setState(() {
-        isLoadingMore = false;
-        nextPageToken = null;
-      });
-    }
-  }
-
-  String getPhotoUrl(String? photoReference) {
-    if (photoReference == null) return 'assets/images/pizza.jpg';
-
-    return 'https://maps.googleapis.com/maps/api/place/photo'
-        '?maxwidth=400'
-        '&photo_reference=$photoReference'
-        '&key=$apiKey';
-  }
-
-  Future<void> fetchRestaurants() async {
-    final tripDoc = FirebaseFirestore.instance
-            .collection('trips')
-            .doc(widget.tripId);
-
-    final tripSnapshot = await tripDoc.get();
-    
-    if (!tripSnapshot.exists) {
-      print('Trip document does not exist!');
-      setState(() {
-        isLoading = false;
-      });
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Trip not found')),
-      );
-      return;
-    }
-
-    final data = tripSnapshot.data() as Map<String, dynamic>;
-    
-    if (data['latitude'] == null || data['longitude'] == null || 
-        data['radius'] == null || data['blueprint'] == null ||
-        widget.index >= data['blueprint'].length) {
-      print('Missing required trip data!');
-      setState(() {
-        isLoading = false;
-      });
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Invalid trip data')),
-      );
-      return;
-    }
-
-    final location = '${data['latitude'] ?? 0.0},${data['longitude'] ?? 0.0}';
-    final radius = ((data['radius'] as num).toDouble() * 1000).round().toString();
-    final String type = data['blueprint'][widget.index]['activity']['type'] == 'ActivityType.food' 
-        ? 'restaurant' 
-        : 'activity';
-
-    _baseUrl = 'https://maps.googleapis.com/maps/api/place/nearbysearch/json?'
-        'location=$location&radius=$radius&type=$type&key=$apiKey';
-    
-    final url = Uri.parse(_baseUrl!);
-    print('Request URL: $url');
-
-    try {
-      final response = await http.get(url);
-      final data = json.decode(response.body) as Map<String, dynamic>;
-
-      if (data['status'] == 'OK') {
-        final results = (data['results'] as List).map((result) {
-          final restaurant = Map<String, dynamic>.from(result);
-
-          String? photoReference;
-          if (restaurant['photos'] != null &&
-              (restaurant['photos'] as List).isNotEmpty) {
-            photoReference = (restaurant['photos'] as List)
-                .first['photo_reference'] as String?;
-          }
-
-          final photoUrl = photoReference != null
-              ? getPhotoUrl(photoReference)
-              : 'assets/images/pizza.jpg';
-
-          restaurant['photoUrl'] = photoUrl;
-
-          return restaurant;
-        }).toList();
-
-        setState(() {
-          restaurants = results;
-          nextPageToken = data['next_page_token'];
-          isLoading = false;
-        });
-      } else {
-        print('API Error: ${data['status']}');
-        setState(() {
-          restaurants = [];
-          isLoading = false;
-        });
+      debugPrint('Error initializing data: $e');
+      if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error loading locations: ${data['status']}')),
+          SnackBar(content: Text('Error: $e'))
         );
       }
-    } catch (e) {
-      print('Error fetching restaurants: $e');
+    } finally {
+      if (mounted) setState(() => isLoading = false);
+    }
+  }
+
+  Future<void> _fetchPlaces(bool isFood) async {
+    try {
+      // Get available types excluding dislikes
+      final baseTypes = isFood ? _foodTypes : _activityTypes;
+      final availableTypes = baseTypes
+          .where((type) => !dislikes.any(
+              (dislike) => type.toLowerCase().contains(dislike.toLowerCase())))
+          .toList();
+
+      if (availableTypes.isEmpty) {
+        throw Exception('No suitable ${isFood ? 'cuisines' : 'activities'} found');
+      }
+
+      // Shuffle and take a subset
+      availableTypes.shuffle();
+      final selectedTypes = availableTypes.take(8).toList();
+
+      // Fetch places for each type
+      final results = await Future.wait(
+        selectedTypes.map((type) => _fetchPlacesByType(type, isFood))
+      );
+
       setState(() {
-        restaurants = [];
-        isLoading = false;
+        places = results.expand((list) => list).toList()..shuffle();
       });
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error loading locations: $e')),
+    } catch (e) {
+      debugPrint('Error fetching places: $e');
+      rethrow;
+    }
+  }
+
+  Future<List<Map<String, dynamic>>> _fetchPlacesByType(String type, bool isFood) async {
+    try {
+      final url = Uri.parse('https://maps.googleapis.com/maps/api/place/nearbysearch/json'
+          '?location=$tripLocation'
+          '&radius=$tripRadius'
+          '&type=${isFood ? 'restaurant' : 'establishment'}'
+          '&keyword=$type'
+          '&key=$apiKey');
+
+      final response = await http.get(url);
+      final data = json.decode(response.body);
+
+      if (data['status'] != 'OK') return [];
+
+      final results = List<Map<String, dynamic>>.from(data['results']);
+      return results.take(3).map((place) {
+        String? photoUrl;
+        if (place['photos'] != null) {
+          final photoRef = place['photos'][0]['photo_reference'];
+          photoUrl = 'https://maps.googleapis.com/maps/api/place/photo'
+              '?maxwidth=400'
+              '&photo_reference=$photoRef'
+              '&key=$apiKey';
+        }
+
+        return {
+          'name': place['name'],
+          'vicinity': place['vicinity'],
+          'photoUrl': photoUrl ?? 'assets/images/pizza.jpg',
+          'type': type,
+          'price_level': place['price_level'] ?? 0,
+        };
+      }).toList();
+    } catch (e) {
+      debugPrint('Error fetching places by type: $e');
+      return [];
+    }
+  }
+
+  Future<void> _onNextPage(String name, String location, String imageLocation, List<String> cuisineTypes, int? priceLevel) async {
+  try {
+    // Create the place data map
+    final placeData = {
+      'name': name,
+      'location': location,
+      'imageLocation': imageLocation,
+      'cuisineTypes': cuisineTypes,
+      'priceLevel': priceLevel ?? 0,
+    };
+
+    // Get the trip document reference
+    final tripRef = FirebaseFirestore.instance.collection('trips').doc(widget.tripId);
+
+    // Fetch current savedTrip array or create new one
+    final tripDoc = await tripRef.get();
+    List<dynamic> currentSavedTrip = [];
+    
+    if (tripDoc.exists) {
+      currentSavedTrip = List<dynamic>.from(tripDoc.data()?['savedTrip'] ?? []);
+    }
+
+    // Add new place data at the current index
+    if (currentSavedTrip.length > widget.index) {
+      currentSavedTrip[widget.index] = placeData;
+    } else {
+      // Fill any gaps with null and add the new data
+      while (currentSavedTrip.length < widget.index) {
+        currentSavedTrip.add(null);
+      }
+      currentSavedTrip.add(placeData);
+    }
+
+    // Update the document
+    await tripRef.update({
+      'savedTrip': currentSavedTrip,
+    });
+
+    // Navigate to next screen
+    if (widget.index >= blueprints.length - 1) {
+      if (mounted) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (ctx) => const CustomNavigatonBar())
+        );
+      }
+      return;
+    }
+
+    if (mounted) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (ctx) => TripListScreen(
+            tripId: widget.tripId,
+            index: widget.index + 1
+          ),
+        ),
       );
     }
+  } catch (e) {
+    debugPrint('Error saving trip data: $e');
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error saving selection: $e'))
+      );
+    }
+  }
+}
+
+  String _capitalizeFirst(String text) {
+    if (text.isEmpty) return text;
+    return text[0].toUpperCase() + text.substring(1).toLowerCase();
   }
 
   @override
   Widget build(BuildContext context) {
+    if (blueprints.isEmpty || widget.index >= blueprints.length) {
+      return const ScaffoldLayout(
+        body: Center(child: Text('Loading...')),
+      );
+    }
+
+    final isFood = blueprints[widget.index]['activity']['type'] == 'ActivityType.food';
+    final titleText = isFood ? 'Let\'s pick your restaurant!' : 'Let\'s pick your activity!';
+
     return ScaffoldLayout(
       body: Padding(
         padding: const EdgeInsets.all(20.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const TitleText(text: 'Let\'s pick your location!'),
-            const SizedBox(height: 6),
-            const NormalText(
-              text: 'Select a restaurant you would like to add to your trip',
-              alignment: TextAlign.start,
-            ),
+            TitleText(text: titleText),
             const SizedBox(height: 30),
             Expanded(
               child: isLoading
                   ? const Center(child: CircularProgressIndicator())
-                  : Scrollbar(
-                      controller: _scrollController,
-                      thumbVisibility: true,
-                      thickness: 6,
-                      radius: const Radius.circular(10),
-                      child: SingleChildScrollView(
-                        controller: _scrollController,
-                        padding: const EdgeInsets.only(right: 10),
-                        child: Column(
-                          children: [
-                            ...restaurants.map((restaurant) {
-                              return TripOption(
-                                name: restaurant['name'] ?? 'Unknown Restaurant',
-                                location: restaurant['vicinity'] ?? 'Unknown Location',
-                                imageLocation: restaurant['photoUrl'],
-                                types: List<String>.from(restaurant['types'] ?? []),
-                                priceLevel: restaurant['price_level'] ?? 0,
-                              );
-                              }),
-                            if (isLoadingMore)
-                              const Padding(
-                                padding: EdgeInsets.all(8.0),
-                                child: Center(
-                                  child: CircularProgressIndicator(),
-                                ),
-                              ),
-                            if (isLoadingMore)
-                              const Padding(
-                                padding: EdgeInsets.all(8.0),
-                                child: Center(
-                                  child: CircularProgressIndicator(),
-                                ),
-                              ),
-                          ],
-                        ),
-                      ),
+                  : ListView.builder(
+                      itemCount: places.length,
+                      itemBuilder: (context, index) {
+                        final place = places[index];
+                        return TripOption(
+                          name: place['name'] ?? 'Unknown Place',
+                          location: place['vicinity'] ?? 'Unknown Location',
+                          imageLocation: place['photoUrl'] ?? 'assets/images/pizza.jpg',
+                          cuisineTypes: [_capitalizeFirst(place['type'] ?? 'Unknown')],
+                          priceLevel: place['price_level'] ?? 0,
+                          onTap: _onNextPage,
+                        );
+                      },
                     ),
             ),
           ],
