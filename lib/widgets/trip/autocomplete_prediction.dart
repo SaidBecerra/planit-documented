@@ -1,10 +1,7 @@
 class AutocompletePrediction {
   final String? description;
-
   final StructuredFormatting? structuredFormatting;
-
   final String? placeId;
-
   final String? reference;
 
   AutocompletePrediction({
@@ -28,7 +25,6 @@ class AutocompletePrediction {
 
 class StructuredFormatting {
   final String? mainText;
-
   final String? secondaryText;
 
   StructuredFormatting({this.mainText, this.secondaryText});

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:planit/widgets/main_button.dart';
 import 'package:planit/widgets/scaffold_layout.dart';
 import 'package:planit/widgets/trip/timeslot.dart';
@@ -8,16 +9,32 @@ enum ActivityType { food, activity }
 
 class Activity {
   final String name;
-  final IconData icon;
   final ActivityType type;
-  final Color color;
 
   const Activity({
     required this.name,
-    required this.icon,
     required this.type,
-    required this.color,
   });
+
+  Map<String, dynamic> toMap() {
+    return {
+      'name': name,
+      'type': type.toString(),
+    };
+  }
+
+  factory Activity.fromMap(Map<String, dynamic> map) {
+    return Activity(
+      name: map['name'],
+      type: ActivityType.values.firstWhere((e) => e.toString() == map['type'],
+          orElse: () => ActivityType.activity),
+    );
+  }
+
+  IconData get icon =>
+      type == ActivityType.food ? Icons.restaurant : Icons.local_activity;
+
+  Color get color => type == ActivityType.food ? Colors.orange : Colors.blue;
 }
 
 class TimeSlotData {
@@ -28,10 +45,29 @@ class TimeSlotData {
     required this.position,
     required this.activity,
   });
+
+  Map<String, dynamic> toMap() {
+    return {
+      'position': position,
+      'activity': activity.toMap(),
+    };
+  }
+
+  factory TimeSlotData.fromMap(Map<String, dynamic> map) {
+    return TimeSlotData(
+      position: map['position'],
+      activity: Activity.fromMap(map['activity']),
+    );
+  }
 }
 
 class BluePrintScreen extends StatefulWidget {
-  const BluePrintScreen({super.key});
+  const BluePrintScreen({
+    required this.tripId,
+    super.key,
+  });
+
+  final String tripId;
 
   @override
   State<BluePrintScreen> createState() => _BluePrintScreenState();
@@ -44,15 +80,11 @@ class _BluePrintScreenState extends State<BluePrintScreen> {
   final List<Activity> timeslotTypes = [
     const Activity(
       name: 'Food',
-      icon: Icons.restaurant,
       type: ActivityType.food,
-      color: Colors.orange,
     ),
     const Activity(
       name: 'Activity',
-      icon: Icons.local_activity,
       type: ActivityType.activity,
-      color: Colors.blue,
     ),
   ];
 
@@ -69,15 +101,11 @@ class _BluePrintScreenState extends State<BluePrintScreen> {
   }
 
   void _deleteSlot(TimeSlotData slot) {
-    setState(() {
-      slots.remove(slot);
-    });
+    setState(() => slots.remove(slot));
   }
 
   void _setDragging(bool isDragging) {
-    setState(() {
-      _isDragging = isDragging;
-    });
+    setState(() => _isDragging = isDragging);
   }
 
   Future<void> _showTimeslotPicker() async {
@@ -89,20 +117,14 @@ class _BluePrintScreenState extends State<BluePrintScreen> {
           padding: const EdgeInsets.all(20),
           decoration: const BoxDecoration(
             color: Colors.white,
-            borderRadius: BorderRadius.vertical(
-              top: Radius.circular(25),
-            ),
+            borderRadius: BorderRadius.vertical(top: Radius.circular(25)),
           ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const Text(
                 'Select Timeslot',
-                style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                ),
+                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 20),
               Row(
@@ -112,38 +134,15 @@ class _BluePrintScreenState extends State<BluePrintScreen> {
                             padding: const EdgeInsets.symmetric(horizontal: 8),
                             child: InkWell(
                               onTap: () => Navigator.pop(context, type),
-                              borderRadius: BorderRadius.circular(15),
                               child: Container(
-                                padding: const EdgeInsets.symmetric(vertical: 30),
-                                decoration: BoxDecoration(
-                                  color: type.type == ActivityType.food
-                                      ? const Color(0xFFE5DDDA)
-                                      : const Color(0xFFE1E6F0),
-                                  borderRadius: BorderRadius.circular(15),
-                                ),
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 30),
                                 child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
-                                    Icon(
-                                      type.type == ActivityType.food
-                                          ? Icons.restaurant_menu
-                                          : Icons.local_activity,
-                                      size: 32,
-                                      color: type.type == ActivityType.food
-                                          ? Colors.orange
-                                          : Colors.blue,
-                                    ),
+                                    Icon(type.icon,
+                                        size: 32, color: type.color),
                                     const SizedBox(height: 8),
-                                    Text(
-                                      type.name,
-                                      style: TextStyle(
-                                        color: type.type == ActivityType.food
-                                            ? Colors.orange
-                                            : Colors.blue,
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.w600,
-                                      ),
-                                    ),
+                                    Text(type.name),
                                   ],
                                 ),
                               ),
@@ -152,7 +151,6 @@ class _BluePrintScreenState extends State<BluePrintScreen> {
                         ))
                     .toList(),
               ),
-              const SizedBox(height: 20),
             ],
           ),
         );
@@ -171,13 +169,35 @@ class _BluePrintScreenState extends State<BluePrintScreen> {
     }
   }
 
-    void _onTripList(BuildContext context) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (ctx) => const TripListScreen(),
-      ),
-    );
+  Future<void> _onTripList() async {
+    try {
+      if (slots.isNotEmpty) {
+        await FirebaseFirestore.instance
+            .collection('trips')
+            .doc(widget.tripId)
+            .update({
+          'blueprint': slots.map((slot) => slot.toMap()).toList(),
+          'lastUpdated': FieldValue.serverTimestamp(),
+        });
+      }
+
+      if (mounted) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+              builder: (context) => TripListScreen(
+                    tripId: widget.tripId,
+                    index: 0,
+                  )),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error saving blueprint: $e')),
+        );
+      }
+    }
   }
 
   @override
@@ -194,7 +214,8 @@ class _BluePrintScreenState extends State<BluePrintScreen> {
                   itemBuilder: (context, index) => TimeSlotPosition(
                     index: index,
                     timeSlot: timeSlots[index],
-                    occupyingSlots: slots.where((s) => s.position == index).toList(),
+                    occupyingSlots:
+                        slots.where((s) => s.position == index).toList(),
                     onAccept: (slot) => _handleDrop(index, slot),
                     getTimeRange: _getTimeRange,
                     onDragStarted: () => _setDragging(true),
@@ -208,8 +229,10 @@ class _BluePrintScreenState extends State<BluePrintScreen> {
                     right: 0,
                     child: Center(
                       child: DragTarget<TimeSlotData>(
-                        onAcceptWithDetails: (details) => _deleteSlot(details.data),
-                        builder: (context, candidateData, rejectedData) => Container(
+                        onAcceptWithDetails: (details) =>
+                            _deleteSlot(details.data),
+                        builder: (context, candidateData, rejectedData) =>
+                            Container(
                           width: 60,
                           height: 60,
                           decoration: BoxDecoration(
@@ -248,7 +271,7 @@ class _BluePrintScreenState extends State<BluePrintScreen> {
                     text: 'Next',
                     backgroundColor: Colors.black,
                     foregroundColor: Colors.white,
-                    onTap: () => _onTripList(context),
+                    onTap: _onTripList,
                   ),
                 ),
               ],
@@ -280,34 +303,6 @@ class TimeSlotPosition extends StatelessWidget {
     required this.onDragEnded,
   });
 
-  Widget _buildDraggableTimeSlot(BuildContext context, TimeSlotData slot) {
-    return Draggable<TimeSlotData>(
-      data: slot,
-      onDragStarted: onDragStarted,
-      onDragEnd: (_) => onDragEnded(),
-      onDraggableCanceled: (_, __) => onDragEnded(),
-      feedback: SizedBox(
-        width: MediaQuery.of(context).size.width - 40,
-        child: Material(
-          color: Colors.transparent,
-          child: TimeSlot(
-            text: slot.activity.name,
-            time: getTimeRange(index),
-            icon: slot.activity.icon,
-            color: slot.activity.color,
-          ),
-        ),
-      ),
-      childWhenDragging: const SizedBox(height: 100),
-      child: TimeSlot(
-        text: slot.activity.name,
-        time: getTimeRange(index),
-        icon: slot.activity.icon,
-        color: slot.activity.color,
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return DragTarget<TimeSlotData>(
@@ -324,8 +319,31 @@ class TimeSlotPosition extends StatelessWidget {
               fontWeight: FontWeight.w500,
             ),
           ),
-          ...occupyingSlots
-              .map((slot) => _buildDraggableTimeSlot(context, slot)),
+          ...occupyingSlots.map((slot) => Draggable<TimeSlotData>(
+                data: slot,
+                onDragStarted: onDragStarted,
+                onDragEnd: (_) => onDragEnded(),
+                onDraggableCanceled: (_, __) => onDragEnded(),
+                feedback: SizedBox(
+                  width: MediaQuery.of(context).size.width - 40,
+                  child: Material(
+                    color: Colors.transparent,
+                    child: TimeSlot(
+                      text: slot.activity.name,
+                      time: getTimeRange(index),
+                      icon: slot.activity.icon,
+                      color: slot.activity.color,
+                    ),
+                  ),
+                ),
+                childWhenDragging: const SizedBox(height: 100),
+                child: TimeSlot(
+                  text: slot.activity.name,
+                  time: getTimeRange(index),
+                  icon: slot.activity.icon,
+                  color: slot.activity.color,
+                ),
+              )),
           if (candidateData.isNotEmpty)
             Container(
               width: double.infinity,

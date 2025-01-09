@@ -10,7 +10,7 @@ class GroupchatScreen extends StatelessWidget {
 
   void _onCreateTrip(BuildContext context) {
     Navigator.push(
-        context, MaterialPageRoute(builder: (ctx) => const CreateTripScreen()));
+        context, MaterialPageRoute(builder: (ctx) => CreateTripScreen(groupchat_id: groupchatID,)));
   }
 
   @override

@@ -67,14 +67,11 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
           try {
             defaultImageUrl = await storageRef.getDownloadURL();
           } catch (error) {
-            final byteData = await rootBundle
-                .load('assets/icons/yoda.jpg');
-            final Uint8List fileData =
-                byteData.buffer.asUint8List(); 
+            final byteData = await rootBundle.load('assets/icons/yoda.jpg');
+            final Uint8List fileData = byteData.buffer.asUint8List();
 
-            await storageRef.putData(fileData); 
-            defaultImageUrl =
-                await storageRef.getDownloadURL();
+            await storageRef.putData(fileData);
+            defaultImageUrl = await storageRef.getDownloadURL();
           }
 
           await FirebaseFirestore.instance.collection('groupchats').add({
@@ -83,7 +80,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
             'createdAt': Timestamp.now(),
             'createdBy': userCredential.user!.uid,
             'members': [userCredential.user!.uid],
-            'tripCount': 0,
+            'trips': [],
           });
         } on FirebaseAuthException catch (firestoreError) {
           ScaffoldMessenger.of(context).showSnackBar(

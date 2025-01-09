@@ -48,7 +48,7 @@ class CreateGroupchatScreenState extends State<CreateGroupchatScreen> {
         'createdAt': Timestamp.now(),
         'createdBy': currentUser.uid,
         'members': [currentUser.uid],
-        'tripCount': 0,
+        'trips': [],
       });
 
     final groupchatID = groupchatRef.id;
