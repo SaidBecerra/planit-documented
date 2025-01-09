@@ -14,8 +14,6 @@ void main() async {
       home: StreamBuilder(
         stream: FirebaseAuth.instance.authStateChanges(),
         builder: (ctx, snapshot) {
-          print(
-          'Auth state changed LJDKGDLKFGJKGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG: ${snapshot.data}'); // Add this line
             if (snapshot.hasData) {
               return const CustomNavigatonBar();
             }

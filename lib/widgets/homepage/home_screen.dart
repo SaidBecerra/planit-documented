@@ -45,6 +45,7 @@ class HomeScreenState extends State<HomeScreen> {
               }
 
               final docs = snapshot.data!.docs;
+            
 
               return Scrollbar(
                 thumbVisibility: true,
@@ -55,12 +56,12 @@ class HomeScreenState extends State<HomeScreen> {
                   child: Column(
                     children: docs.map((doc) {
                       final data = doc.data() as Map<String, dynamic>;
-
                       return GroupChat(
                         users: [currentUser],
                         name: data['name'] as String,
                         tripCount: data['tripCount'] as int,
                         imageUrl: data['imageUrl'] as String,
+                        groupchatID: doc.id,
                       );
                     }).toList(),
                   ),

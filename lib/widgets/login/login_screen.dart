@@ -3,7 +3,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:planit/widgets/homepage/custom_navigation_bar.dart';
-import 'package:planit/widgets/homepage/home_screen.dart';
 import 'package:planit/widgets/input_field.dart';
 import 'package:planit/widgets/label_text.dart';
 import 'package:planit/widgets/main_button.dart';
@@ -12,7 +11,6 @@ import 'package:planit/widgets/password_field.dart';
 import 'package:planit/widgets/registration/registration_screen.dart';
 import 'package:planit/widgets/scaffold_layout.dart';
 import 'package:planit/widgets/terms_text.dart';
-import 'package:planit/widgets/text_input.dart';
 import 'package:planit/widgets/title_text.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 

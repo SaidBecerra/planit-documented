@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
 
 class ScaffoldLayout extends StatelessWidget{
-  const ScaffoldLayout({
+  ScaffoldLayout({
     this.backgroundColor,
     this.floatingActionButton,
+    this.actions,
     required this.body,
     super.key
   });
   final Widget body;
   final Color? backgroundColor;
   final FloatingActionButton? floatingActionButton;
+  List<Widget>? actions;
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +40,7 @@ class ScaffoldLayout extends StatelessWidget{
             ),
             onPressed: () => Navigator.pop(context),
           ),
-        ),
+        ),actions: actions,
       ),
       body: body,
     );

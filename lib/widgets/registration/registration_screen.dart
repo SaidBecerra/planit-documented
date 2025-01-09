@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
@@ -13,7 +11,6 @@ import 'package:planit/widgets/password_field.dart';
 import 'package:planit/widgets/registration/confirmation_screen.dart';
 import 'package:planit/widgets/scaffold_layout.dart';
 import 'package:planit/widgets/terms_text.dart';
-import 'package:planit/widgets/text_input.dart';
 import 'package:planit/widgets/normal_text.dart';
 import 'package:planit/widgets/title_text.dart';
 import 'package:firebase_auth/firebase_auth.dart';
