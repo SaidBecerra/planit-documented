@@ -4,7 +4,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:planit/widgets/NewGroupChatBottomSheet.dart';
 import 'package:planit/widgets/homepage/home_screen.dart';
 import 'package:planit/widgets/homepage/profile_screen.dart';
-import 'package:planit/widgets/registration/welcome_screen.dart';
 
 class CustomNavigatonBar extends StatefulWidget {
   const CustomNavigatonBar({super.key});
@@ -31,6 +30,7 @@ class _CustomNavigationBarState extends State<CustomNavigatonBar> {
     return Scaffold(
       appBar: AppBar(
           title: Text(currentIndex == 0 ? 'Home' : 'Profile'),
+          leading: null,
       ),
       bottomNavigationBar: Container(
         decoration: const BoxDecoration(

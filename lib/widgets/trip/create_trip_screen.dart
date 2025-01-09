@@ -32,7 +32,7 @@ class _CreateTripScreenState extends State<CreateTripScreen> {
   List<AutocompletePrediction> _placePredictions = [];
   String _name = '';
   String _location = '';
-  double _radius = 10.0; // Default to minimum value
+  double _radius = 5.0; // Default to minimum value
   bool _isLoading = false;
   String? _error;
 
@@ -256,8 +256,8 @@ class _CreateTripScreenState extends State<CreateTripScreen> {
     if (number == null) {
       return 'Please enter a valid number';
     }
-    if (number < 10) {
-      return 'Radius must be at least 10 km';
+    if (number < 5) {
+      return 'Radius must be at least 5 km';
     }
     if (number > 100) {
       return 'Radius cannot be greater than 100 km';
@@ -322,7 +322,7 @@ class _CreateTripScreenState extends State<CreateTripScreen> {
                               ),
                               child: Slider(
                                 value: _radius,
-                                min: 10,
+                                min: 5,
                                 max: 100,
                                 divisions: 90, // This makes each step 1km
                                 onChanged: (value) {
