@@ -18,6 +18,9 @@ class ScaffoldLayout extends StatelessWidget {
     return Scaffold(
       floatingActionButton: floatingActionButton,
       appBar: AppBar(
+        scrolledUnderElevation: 0,
+        surfaceTintColor: Colors.transparent,
+        forceMaterialTransparency: true,
         elevation: 0,
         leading: Container(
           margin: const EdgeInsets.only(left: 16, top: 8, bottom: 8),
