@@ -1,16 +1,123 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:planit/widgets/groupchat/view_members.dart';
 import 'package:planit/widgets/main_button.dart';
 import 'package:planit/widgets/scaffold_layout.dart';
 import 'package:planit/widgets/trip/create_trip_screen.dart';
+import 'package:planit/widgets/trip/trip_summary.dart';
 
-class GroupchatScreen extends StatelessWidget {
+class GroupchatScreen extends StatefulWidget {
   const GroupchatScreen({required this.groupchatID, super.key});
-    final String groupchatID; 
+  final String groupchatID;
+
+  @override
+  State<GroupchatScreen> createState() {
+    return GroupchatScreenState();
+  }
+}
+
+class GroupchatScreenState extends State<GroupchatScreen> {
+  List<Map<String, dynamic>> trips = [];
+  bool isLoading = true;
+  Map<String, String> creatorNames = {};
+
+  @override
+  void initState() {
+    super.initState();
+    _loadTrips();
+  }
+
+  Future<String> _getCreatorName(String userId) async {
+    if (creatorNames.containsKey(userId)) {
+      return creatorNames[userId]!;
+    }
+
+    try {
+      final userDoc = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(userId)
+          .get();
+      
+      final userName = userDoc.data()?['username'] ?? 'Unknown User';
+      creatorNames[userId] = userName;
+      return userName;
+    } catch (e) {
+      debugPrint('Error fetching user name: $e');
+      return 'Unknown User';
+    }
+  }
+
+  Future<void> _loadTrips() async {
+    try {
+      setState(() => isLoading = true);
+
+      final groupchatDoc = await FirebaseFirestore.instance
+          .collection('groupchats')
+          .doc(widget.groupchatID)
+          .get();
+
+      if (!groupchatDoc.exists) {
+        debugPrint('Groupchat document not found');
+        setState(() => isLoading = false);
+        return;
+      }
+
+      final tripIds = List<String>.from(groupchatDoc.data()?['trips'] ?? []);
+      
+      if (tripIds.isEmpty) {
+        setState(() {
+          trips = [];
+          isLoading = false;
+        });
+        return;
+      }
+
+      final tripsSnapshots = await Future.wait(
+        tripIds.map((tripId) =>
+            FirebaseFirestore.instance.collection('trips').doc(tripId).get()),
+      );
+
+      final loadedTrips = tripsSnapshots
+          .where((doc) => doc.exists)
+          .map((doc) => {
+                ...doc.data()!,
+                'id': doc.id,
+              })
+          .toList();
+
+      // Fetch creator names for all trips
+      for (var trip in loadedTrips) {
+        if (trip['created_by'] != null) {
+          trip['creator_name'] = await _getCreatorName(trip['created_by']);
+        }
+      }
+
+      setState(() {
+        trips = loadedTrips;
+        isLoading = false;
+      });
+    } catch (e) {
+      debugPrint('Error loading trips: $e');
+      setState(() => isLoading = false);
+    }
+  }
 
   void _onCreateTrip(BuildContext context) {
     Navigator.push(
-        context, MaterialPageRoute(builder: (ctx) => CreateTripScreen(groupchat_id: groupchatID,)));
+      context,
+      MaterialPageRoute(
+        builder: (ctx) => CreateTripScreen(groupchat_id: widget.groupchatID),
+      ),
+    ).then((_) => _loadTrips());
+  }
+
+  void _onTripTap(String tripId) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (ctx) => TripSummary(tripId: tripId),
+      ),
+    );
   }
 
   @override
@@ -24,11 +131,12 @@ class GroupchatScreen extends StatelessWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (ctx) => ViewMembersScreen(groupchatID: groupchatID),
-                )
+                  builder: (ctx) =>
+                      ViewMembersScreen(groupchatID: widget.groupchatID),
+                ),
               );
             },
-            icon: const Icon(Icons.add_circle_outline_rounded)
+            icon: const Icon(Icons.add_circle_outline_rounded),
           ),
         )
       ],
@@ -36,16 +144,67 @@ class GroupchatScreen extends StatelessWidget {
         padding: const EdgeInsets.all(20),
         child: Column(
           children: [
-            const Expanded(
-              child: Scrollbar(
-                thumbVisibility: true,
-                thickness: 6,
-                radius: Radius.circular(10),
-                child: SingleChildScrollView(
-                  padding: EdgeInsets.only(right: 12),
-                  child: Text('hello'),
-                ),
-              ),
+            Expanded(
+              child: isLoading
+                  ? const Center(child: CircularProgressIndicator())
+                  : trips.isEmpty
+                      ? const Center(
+                          child: Text('No trips yet. Create one to get started!'))
+                      : Scrollbar(
+                          thumbVisibility: true,
+                          thickness: 6,
+                          radius: const Radius.circular(10),
+                          child: ListView.builder(
+                            itemCount: trips.length,
+                            padding: const EdgeInsets.only(right: 12),
+                            itemBuilder: (context, index) {
+                              final trip = trips[index];
+                              return Card(
+                                margin: const EdgeInsets.only(bottom: 12),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(16.0),
+                                  child: Row(
+                                    children: [
+                                      Expanded(
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              trip['name'] ?? 'Unnamed Trip',
+                                              style: const TextStyle(
+                                                fontSize: 16,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                            const SizedBox(height: 4),
+                                            Text(
+                                              'Created by ${trip['creator_name'] ?? 'Unknown User'}',
+                                              style: TextStyle(
+                                                color: Colors.grey[600],
+                                                fontSize: 14,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      ElevatedButton(
+                                        onPressed: () => _onTripTap(trip['id']),
+                                        style: ElevatedButton.styleFrom(
+                                          backgroundColor: Colors.black,
+                                          foregroundColor: Colors.white,
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(8),
+                                          ),
+                                        ),
+                                        child: const Text('View Details'),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
+                        ),
             ),
             Padding(
               padding: const EdgeInsets.only(
@@ -55,9 +214,7 @@ class GroupchatScreen extends StatelessWidget {
                 text: 'Create Trip',
                 backgroundColor: Colors.black,
                 foregroundColor: Colors.white,
-                onTap: () {
-                  _onCreateTrip(context);
-                },
+                onTap: () => _onCreateTrip(context),
               ),
             ),
           ],
