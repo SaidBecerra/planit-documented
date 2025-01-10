@@ -67,7 +67,6 @@ class _TripListScreenState extends State<TripListScreen> {
     'Writing',
   ];
 
-  // Existing variables
   List<Map<String, dynamic>> places = [];
   List<Map<String, dynamic>> blueprints = [];
   bool isLoading = true;
@@ -75,32 +74,10 @@ class _TripListScreenState extends State<TripListScreen> {
   String tripRadius = '';
   List<String> dislikes = [];
 
-  // New variables for infinite scrolling
-  final ScrollController _scrollController = ScrollController();
-  bool _isLoadingMore = false;
-  String? _nextPageToken;
-  int _currentTypeIndex = 0;
-  List<String> _selectedTypes = [];
-
   @override
   void initState() {
     super.initState();
-    _scrollController.addListener(_scrollListener);
     _initializeData();
-  }
-
-  @override
-  void dispose() {
-    _scrollController.dispose();
-    super.dispose();
-  }
-
-  void _scrollListener() {
-    if (_scrollController.position.pixels >= _scrollController.position.maxScrollExtent * 0.8 &&
-        !_isLoadingMore &&
-        _nextPageToken != null) {
-      _loadMorePlaces();
-    }
   }
 
   Future<void> _initializeData() async {
@@ -149,20 +126,8 @@ class _TripListScreenState extends State<TripListScreen> {
           .toSet()
           .toList();
 
-      // Initialize selected types
-      final baseTypes = isFood ? _foodTypes : _activityTypes;
-      _selectedTypes = baseTypes
-          .where((type) => !dislikes.any(
-              (dislike) => type.toLowerCase().contains(dislike.toLowerCase())))
-          .toList();
-
-      if (_selectedTypes.isEmpty) {
-        throw Exception(
-            'No suitable ${isFood ? 'cuisines' : 'activities'} found');
-      }
-
-      _selectedTypes.shuffle();
-      await _fetchInitialPlaces(isFood);
+      // Fetch places
+      await _fetchPlaces(isFood);
     } catch (e) {
       debugPrint('Error initializing data: $e');
       if (mounted) {
@@ -174,76 +139,34 @@ class _TripListScreenState extends State<TripListScreen> {
     }
   }
 
-  Future<void> _fetchInitialPlaces(bool isFood) async {
+  Future<void> _fetchPlaces(bool isFood) async {
     try {
-      final results = await _fetchPlacesByType(_selectedTypes[_currentTypeIndex], isFood);
+      // Get available types excluding dislikes
+      final baseTypes = isFood ? _foodTypes : _activityTypes;
+      final availableTypes = baseTypes
+          .where((type) => !dislikes.any(
+              (dislike) => type.toLowerCase().contains(dislike.toLowerCase())))
+          .toList();
+
+      if (availableTypes.isEmpty) {
+        throw Exception(
+            'No suitable ${isFood ? 'cuisines' : 'activities'} found');
+      }
+
+      // Shuffle and take a subset
+      availableTypes.shuffle();
+      final selectedTypes = availableTypes.take(8).toList();
+
+      // Fetch places for each type
+      final results = await Future.wait(
+          selectedTypes.map((type) => _fetchPlacesByType(type, isFood)));
+
       setState(() {
-        places = results;
-        _currentTypeIndex++;
+        places = results.expand((list) => list).toList()..shuffle();
       });
     } catch (e) {
-      debugPrint('Error fetching initial places: $e');
+      debugPrint('Error fetching places: $e');
       rethrow;
-    }
-  }
-
-  Future<void> _loadMorePlaces() async {
-    if (_isLoadingMore) return;
-
-    setState(() => _isLoadingMore = true);
-
-    try {
-      List<Map<String, dynamic>> newPlaces = [];
-      
-      // Try to get more places with next_page_token
-      if (_nextPageToken != null) {
-        newPlaces = await _fetchPlacesWithToken(_selectedTypes[_currentTypeIndex - 1]);
-      }
-      
-      // If no more places with token or no token, try next type
-      if (newPlaces.isEmpty && _currentTypeIndex < _selectedTypes.length) {
-        final isFood = blueprints[widget.index]['activity']['type'] == 'ActivityType.food';
-        newPlaces = await _fetchPlacesByType(_selectedTypes[_currentTypeIndex], isFood);
-        _currentTypeIndex++;
-      }
-
-      if (mounted) {
-        setState(() {
-          places.addAll(newPlaces);
-          _isLoadingMore = false;
-        });
-      }
-    } catch (e) {
-      debugPrint('Error loading more places: $e');
-      if (mounted) {
-        setState(() => _isLoadingMore = false);
-      }
-    }
-  }
-
-  Future<List<Map<String, dynamic>>> _fetchPlacesWithToken(String type) async {
-    try {
-      // Add delay to respect Google Places API rate limiting
-      await Future.delayed(const Duration(seconds: 2));
-
-      final url = Uri.parse(
-          'https://maps.googleapis.com/maps/api/place/nearbysearch/json'
-          '?pagetoken=$_nextPageToken'
-          '&key=$apiKey');
-
-      final response = await http.get(url);
-      final data = json.decode(response.body);
-
-      if (data['status'] != 'OK') return [];
-
-      // Save next page token for future requests
-      _nextPageToken = data['next_page_token'];
-
-      final results = List<Map<String, dynamic>>.from(data['results']);
-      return _processPlaceResults(results, type);
-    } catch (e) {
-      debugPrint('Error fetching places with token: $e');
-      return [];
     }
   }
 
@@ -263,71 +186,79 @@ class _TripListScreenState extends State<TripListScreen> {
 
       if (data['status'] != 'OK') return [];
 
-      // Save next page token for future requests
-      _nextPageToken = data['next_page_token'];
-
       final results = List<Map<String, dynamic>>.from(data['results']);
-      return _processPlaceResults(results, type);
+      return results.take(3).map((place) {
+        String? photoUrl;
+        if (place['photos'] != null) {
+          final photoRef = place['photos'][0]['photo_reference'];
+          photoUrl = 'https://maps.googleapis.com/maps/api/place/photo'
+              '?maxwidth=400'
+              '&photo_reference=$photoRef'
+              '&key=$apiKey';
+        }
+
+        return {
+          'name': place['name'],
+          'vicinity': place['vicinity'],
+          'photoUrl': photoUrl ?? 'assets/images/pizza.jpg',
+          'type': type,
+          'price_level': place['price_level'] ?? 0,
+        };
+      }).toList();
     } catch (e) {
       debugPrint('Error fetching places by type: $e');
       return [];
     }
   }
 
-  List<Map<String, dynamic>> _processPlaceResults(
-      List<Map<String, dynamic>> results, String type) {
-    return results.map((place) {
-      String? photoUrl;
-      if (place['photos'] != null) {
-        final photoRef = place['photos'][0]['photo_reference'];
-        photoUrl = 'https://maps.googleapis.com/maps/api/place/photo'
-            '?maxwidth=400'
-            '&photo_reference=$photoRef'
-            '&key=$apiKey';
-      }
-
-      return {
-        'name': place['name'],
-        'vicinity': place['vicinity'],
-        'photoUrl': photoUrl ?? 'assets/images/pizza.jpg',
-        'type': type,
-        'price_level': place['price_level'] ?? 0,
-      };
-    }).toList();
-  }
-
   Future<void> _onNextPage(String name, String location, String imageLocation,
       List<String> cuisineTypes, int? priceLevel) async {
     try {
-      // Get the blueprint for current index
+      // Get the blueprint for current index with debug logging
       final currentBlueprint = blueprints[widget.index];
+      debugPrint('All blueprints: $blueprints');
+      debugPrint('Current index: ${widget.index}');
+      debugPrint('Current blueprint: $currentBlueprint');
 
-      // Access position from blueprint
-      int position = (currentBlueprint['position'] ?? 10) as int;
+      // Access position directly from blueprint
+      int position;
+      try {
+        position = (currentBlueprint['position'] ?? 10)
+            as int; // Default to 10 as seen in Firestore
+        debugPrint('Position value: $position');
+      } catch (e) {
+        debugPrint('Error getting position: $e');
+        position = 10; // Default to 10 as seen in Firestore
+      }
 
-      // Create the place data map
+      // Create the place data map with position included
       final placeData = {
         'name': name,
         'location': location,
         'imageLocation': imageLocation,
         'cuisineTypes': cuisineTypes,
         'priceLevel': priceLevel ?? 0,
-        'position': position,
+        'position': position, // Add the position from blueprint
       };
 
       // Get the trip document reference
       final tripRef =
           FirebaseFirestore.instance.collection('trips').doc(widget.tripId);
 
-      // Fetch current savedTrip array
+      // Fetch current savedTrip array or create new one
       final tripDoc = await tripRef.get();
-      List<dynamic> currentSavedTrip = 
-          List<dynamic>.from(tripDoc.data()?['savedTrip'] ?? []);
+      List<dynamic> currentSavedTrip = [];
+
+      if (tripDoc.exists) {
+        currentSavedTrip =
+            List<dynamic>.from(tripDoc.data()?['savedTrip'] ?? []);
+      }
 
       // Add new place data at the current index
       if (currentSavedTrip.length > widget.index) {
         currentSavedTrip[widget.index] = placeData;
       } else {
+        // Fill any gaps with null and add the new data
         while (currentSavedTrip.length < widget.index) {
           currentSavedTrip.add(null);
         }
@@ -350,6 +281,7 @@ class _TripListScreenState extends State<TripListScreen> {
             (route) => false,
           );
         }
+
         return;
       }
 
@@ -401,20 +333,8 @@ class _TripListScreenState extends State<TripListScreen> {
               child: isLoading
                   ? const Center(child: CircularProgressIndicator())
                   : ListView.builder(
-                      controller: _scrollController,
-                      itemCount: places.length + 1,
+                      itemCount: places.length,
                       itemBuilder: (context, index) {
-                        if (index == places.length) {
-                          return _isLoadingMore
-                              ? const Center(
-                                  child: Padding(
-                                    padding: EdgeInsets.all(8.0),
-                                    child: CircularProgressIndicator(),
-                                  ),
-                                )
-                              : const SizedBox();
-                        }
-
                         final place = places[index];
                         return TripOption(
                           name: place['name'] ?? 'Unknown Place',
