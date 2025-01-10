@@ -4,7 +4,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:planit/widgets/groupchat/invite_code_screen.dart';
-import 'package:planit/widgets/groupchat/view_members.dart';
 import 'package:planit/widgets/groupchat_image_picker.dart';
 import 'package:planit/widgets/input_field.dart';
 import 'package:planit/widgets/label_text.dart';

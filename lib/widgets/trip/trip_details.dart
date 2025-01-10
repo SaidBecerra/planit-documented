@@ -1,23 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:planit/widgets/homepage/custom_navigation_bar.dart';
-import 'package:planit/widgets/main_button.dart';
+import 'package:planit/widgets/scaffold_layout.dart';
 import 'package:planit/widgets/title_text.dart';
 import 'package:planit/widgets/trip/trip_option.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class TripSummary extends StatefulWidget {
-  const TripSummary({required this.tripId, super.key});
+class TripDetails extends StatefulWidget {
+  const TripDetails({required this.tripId, super.key});
 
   final String tripId;
 
   @override
-  State<TripSummary> createState() {
-    return _TripSummaryState_();
+  State<TripDetails> createState() {
+    return _TripDetailsState();
   }
 }
 
-class _TripSummaryState_ extends State<TripSummary> {
+class _TripDetailsState extends State<TripDetails> {
   List<Map<String, dynamic>> savedTrips = [];
   String tripName = '';
   bool isLoading = true;
@@ -73,7 +72,7 @@ class _TripSummaryState_ extends State<TripSummary> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return ScaffoldLayout(
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(20),
@@ -124,20 +123,6 @@ class _TripSummaryState_ extends State<TripSummary> {
                     ),
                   ),
                 ),
-              MainButton(
-                text: 'Done',
-                backgroundColor: Colors.black,
-                foregroundColor: Colors.white,
-                onTap: () => {
-                  Navigator.pushAndRemoveUntil(
-                    context,
-                    MaterialPageRoute(
-                      builder: (ctx) => const CustomNavigatonBar(),
-                    ),
-                    (route) => false,
-                  )
-                },
-              )
             ],
           ),
         ),

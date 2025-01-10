@@ -51,13 +51,6 @@ class GroupChat extends StatelessWidget {
                         style: GoogleFonts.lato(
                             fontSize: 18, fontWeight: FontWeight.bold),
                       ),
-                      Text(
-                        '2 days ago',
-                        style: GoogleFonts.lato(
-                          fontSize: 14,
-                          color: const Color(0xff646d6d),
-                        ),
-                      )
                     ],
                   ),
                   Text(

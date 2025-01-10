@@ -259,7 +259,7 @@ class ProfileScreenState extends State<ProfileScreen> {
                       const SizedBox(height: 24),
                       MainButton(
                         text: 'Log Out',
-                        backgroundColor: const Color(0xFFFF6F6F),
+                        backgroundColor: const Color(0xFFA294F9),
                         foregroundColor: Colors.black,
                         onTap: () {
                           FirebaseAuth.instance.signOut();

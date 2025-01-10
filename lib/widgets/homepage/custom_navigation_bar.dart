@@ -1,4 +1,3 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:planit/widgets/NewGroupChatBottomSheet.dart';
@@ -29,8 +28,12 @@ class _CustomNavigationBarState extends State<CustomNavigatonBar> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-          title: Text(currentIndex == 0 ? 'Home' : 'Profile'),
-          leading: null,
+        title: Text(currentIndex == 0 ? 'Home' : 'Profile'),
+        leading: null,
+        scrolledUnderElevation: 0,
+        surfaceTintColor: Colors.transparent,
+        forceMaterialTransparency: true,
+        elevation: 0,
       ),
       bottomNavigationBar: Container(
         decoration: const BoxDecoration(

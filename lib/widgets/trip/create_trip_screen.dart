@@ -82,15 +82,6 @@ class _CreateTripScreenState extends State<CreateTripScreen> {
         setState(() {
           _placePredictions = result.predictions ?? [];
         });
-
-        if (_placePredictions.isNotEmpty) {
-          await Future.delayed(const Duration(milliseconds: 100));
-          _scrollController.animateTo(
-            _scrollController.position.maxScrollExtent,
-            duration: const Duration(milliseconds: 300),
-            curve: Curves.easeOut,
-          );
-        }
       }
     } catch (e) {
       setState(() {
