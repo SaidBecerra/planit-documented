@@ -15,8 +15,16 @@ import 'package:planit/widgets/normal_text.dart';
 import 'package:planit/widgets/title_text.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
+/// The FirebaseAuth instance for authentication operations.
 final _firebase = FirebaseAuth.instance;
 
+/// A registration screen that allows new users to create an account.
+/// 
+/// This screen collects user details such as full name, email, phone number, 
+/// and password. After form validation, it registers the user using Firebase 
+/// Authentication, saves additional user data to Firestore, uploads a default 
+/// image to Firebase Storage if necessary, creates a default group chat, and 
+/// finally navigates to the confirmation screen.
 class RegistrationScreen extends StatefulWidget {
   const RegistrationScreen({super.key});
 
@@ -27,25 +35,37 @@ class RegistrationScreen extends StatefulWidget {
 }
 
 class _RegistrationScreenState extends State<RegistrationScreen> {
+  // Global key to identify the form and validate it.
   final _form = GlobalKey<FormState>();
+  // Controller for the phone number input field.
   final _phoneNumberController = TextEditingController();
 
+  // Variables to store the user-entered data.
   var _enteredEmail = '';
   var _enteredName = '';
   var _enteredPassword = '';
   var _enteredPhoneNumber = '';
 
+  /// Registers a new user.
+  /// 
+  /// This method validates the form, saves the entered data, creates a new user 
+  /// with Firebase Authentication, and then saves additional user data to Firestore.
+  /// It also uploads a default image to Firebase Storage for the user's group chat.
+  /// Finally, it navigates to the ConfirmationScreen, passing the entered phone number.
   void _registerUser() async {
     if (_form.currentState!.validate()) {
+      // Save all form fields.
       _form.currentState!.save();
 
       try {
+        // Create a new user with email and password.
         final userCredential = await _firebase.createUserWithEmailAndPassword(
           email: _enteredEmail,
           password: _enteredPassword,
         );
 
         try {
+          // Save additional user details in Firestore.
           await FirebaseFirestore.instance
               .collection('users')
               .doc(userCredential.user!.uid)
@@ -58,6 +78,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
             'createdAt': FieldValue.serverTimestamp(),
           });
 
+          // Reference to the default group image in Firebase Storage.
           final storageRef = FirebaseStorage.instance
               .ref()
               .child('default_images')
@@ -65,15 +86,19 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
 
           String defaultImageUrl;
           try {
+            // Attempt to get the download URL for the default image.
             defaultImageUrl = await storageRef.getDownloadURL();
           } catch (error) {
+            // If the image does not exist, load a local default image asset.
             final byteData = await rootBundle.load('assets/icons/yoda.jpg');
             final Uint8List fileData = byteData.buffer.asUint8List();
 
+            // Upload the local default image to Firebase Storage.
             await storageRef.putData(fileData);
             defaultImageUrl = await storageRef.getDownloadURL();
           }
 
+          // Create a new group chat for the user.
           await FirebaseFirestore.instance.collection('groupchats').add({
             'name': _enteredName,
             'imageUrl': defaultImageUrl,
@@ -83,6 +108,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
             'trips': [],
           });
         } on FirebaseAuthException catch (firestoreError) {
+          // If saving user data fails, show an error and delete the user.
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text('Error saving user data: $firestoreError')),
           );
@@ -90,6 +116,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
           return;
         }
 
+        // Navigate to the ConfirmationScreen, passing the phone number.
         Navigator.push(
           context,
           MaterialPageRoute(
@@ -98,6 +125,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
           ),
         );
       } on FirebaseAuthException catch (error) {
+        // If user registration fails, display the error message.
         ScaffoldMessenger.of(context).clearSnackBars();
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text(error.message ?? 'Authentication failed')),
@@ -106,11 +134,15 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
     }
   }
 
+  /// Navigates to the LoginScreen.
   void _onLogin(BuildContext context) {
     Navigator.push(
-        context, MaterialPageRoute(builder: (ctx) => const LoginScreen()));
+      context, 
+      MaterialPageRoute(builder: (ctx) => const LoginScreen())
+    );
   }
 
+  /// Validates the user's full name.
   String? nameValidator(String? value) {
     if (value == null || value.trim().isEmpty) {
       return 'Name cannot be empty';
@@ -121,6 +153,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
     return null;
   }
 
+  /// Validates the user's email address.
   String? emailValidator(String? value) {
     if (value == null || value.isEmpty) {
       return 'Email cannot be empty';
@@ -132,6 +165,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
     return null;
   }
 
+  /// Validates the user's password.
   String? passwordValidator(String? value) {
     if (value == null || value.isEmpty) {
       return 'Password cannot be empty';
@@ -142,6 +176,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
     return null;
   }
 
+  /// Validates the user's phone number.
   String? phoneNumberValidator(String? value) {
     if (value == null || value.isEmpty) {
       return 'Phone number cannot be empty';
@@ -154,6 +189,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
 
   @override
   void dispose() {
+    // Dispose the phone number controller when the widget is removed.
     _phoneNumberController.dispose();
     super.dispose();
   }
@@ -161,18 +197,22 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
   @override
   Widget build(BuildContext context) {
     return ScaffoldLayout(
+      // Using a custom ScaffoldLayout for consistent design.
       body: SingleChildScrollView(
+        // Allows the content to be scrollable if the keyboard covers fields.
         child: Padding(
           padding: const EdgeInsets.all(20.0),
           child: Form(
-            key: _form,
+            key: _form, // Key to identify and validate the form.
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                // Title text for the registration screen.
                 const TitleText(text: 'Let\'s create a new account'),
                 const SizedBox(
                   height: 6,
                 ),
+                // Informative text for the user.
                 const NormalText(
                   text: 'Create an account by filling in the data below',
                   alignment: TextAlign.start,
@@ -180,6 +220,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                 const SizedBox(
                   height: 30,
                 ),
+                // Input field for the user's full name.
                 InputField(
                   label: 'Full Name',
                   hint: 'Ex: Rosa Parks',
@@ -192,6 +233,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                 const SizedBox(
                   height: 15,
                 ),
+                // Input field for the user's email.
                 InputField(
                   label: 'Email',
                   hint: 'Ex: rosaparks@gmail.com',
@@ -204,6 +246,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                 const SizedBox(
                   height: 15,
                 ),
+                // Input field for the user's phone number.
                 InputField(
                   label: 'Phone Number',
                   hint: 'Ex: 5147714587',
@@ -216,10 +259,12 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                 const SizedBox(
                   height: 15,
                 ),
+                // Label for the password field.
                 const LabelText(text: 'Password'),
                 const SizedBox(
                   height: 5,
                 ),
+                // Input field for the password.
                 PasswordField(
                   validator: passwordValidator,
                   onSaved: (value) {
@@ -229,6 +274,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                 const SizedBox(
                   height: 30,
                 ),
+                // Main button to register the user.
                 SizedBox(
                   width: double.infinity,
                   height: 55,
@@ -242,6 +288,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                 const SizedBox(
                   height: 10,
                 ),
+                // Section for existing users to navigate to the login screen.
                 Center(
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.center,
@@ -267,6 +314,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                   ),
                 ),
                 const SizedBox(height: 10),
+                // A prompt to sign up with alternative methods.
                 const Center(
                   child: NormalText(
                     text: 'Or sign up with',
@@ -274,6 +322,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                   ),
                 ),
                 const SizedBox(height: 15),
+                // Button to sign up with Google.
                 MainButton(
                   text: 'Continue with Google',
                   backgroundColor: Colors.white,
@@ -282,11 +331,12 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                     'assets/images/google.png',
                     width: 20,
                   ),
-                  onTap: () {},
+                  onTap: () {}, // Google sign-up functionality can be added here.
                 ),
                 const SizedBox(
                   height: 40,
                 ),
+                // Terms and conditions text.
                 const Padding(
                   padding: EdgeInsets.only(bottom: 20),
                   child: Center(

@@ -8,10 +8,21 @@ import 'package:planit/widgets/registration/profile_picture_screen.dart';
 import 'package:planit/widgets/scaffold_layout.dart';
 import 'package:planit/widgets/title_text.dart';
 
+/// A screen for confirming the OTP code sent to the user's phone number.
+///
+/// **Features:**
+/// - Displays an OTP input field with 5 square inputs for the user to enter the code.
+/// - Allows users to continue to the next screen after entering the OTP.
+/// - Option to change the phone number if needed.
 class ConfirmationScreen extends StatelessWidget {
+  // Creates a [ConfirmationScreen] widget.
+  ///
+  // [phoneNumber] - The phone number to which the OTP was sent.
   const ConfirmationScreen({required this.phoneNumber, super.key});
+  
   final String phoneNumber;
 
+  /// Navigates to the next screen after the OTP is entered.
   void _onContinue(BuildContext context) {
     Navigator.push(
         context, MaterialPageRoute(builder: (ctx) => const ProfilePictureScreen()));
@@ -31,8 +42,7 @@ class ConfirmationScreen extends StatelessWidget {
             ),
             NormalText(
                 alignment: TextAlign.left,
-                text:
-                    'Please enter the OTP Code that we have sent to + $phoneNumber'),
+                text: 'Please enter the OTP Code that we have sent to + $phoneNumber'),
             const SizedBox(
               height: 15,
             ),
@@ -40,38 +50,14 @@ class ConfirmationScreen extends StatelessWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 spacing: 15,
-                children: [
-                  OtpSquare(
+                children: List.generate(5, (index) {
+                  return OtpSquare(
                     inputFormatters: [
                       LengthLimitingTextInputFormatter(1),
                       FilteringTextInputFormatter.digitsOnly
                     ],
-                  ),
-                  OtpSquare(
-                    inputFormatters: [
-                      LengthLimitingTextInputFormatter(1),
-                      FilteringTextInputFormatter.digitsOnly
-                    ],
-                  ),
-                  OtpSquare(
-                    inputFormatters: [
-                      LengthLimitingTextInputFormatter(1),
-                      FilteringTextInputFormatter.digitsOnly
-                    ],
-                  ),
-                  OtpSquare(
-                    inputFormatters: [
-                      LengthLimitingTextInputFormatter(1),
-                      FilteringTextInputFormatter.digitsOnly
-                    ],
-                  ),
-                  OtpSquare(
-                    inputFormatters: [
-                      LengthLimitingTextInputFormatter(1),
-                      FilteringTextInputFormatter.digitsOnly
-                    ],
-                  ),
-                ],
+                  );
+                }),
               ),
             ),
             Center(
@@ -87,7 +73,7 @@ class ConfirmationScreen extends StatelessWidget {
                   ),
                   TextButton(
                     onPressed: () {
-                      Navigator.pop(context);
+                      Navigator.pop(context);  // Allow the user to change the phone number
                     },
                     child: Text(
                       'Change',
@@ -106,7 +92,7 @@ class ConfirmationScreen extends StatelessWidget {
                 backgroundColor: Colors.black,
                 foregroundColor: Colors.white,
                 onTap: () {
-                  _onContinue(context);
+                  _onContinue(context);  // Navigate to the Profile Picture screen
                 }),
             const SizedBox(
               height: 20,
@@ -117,7 +103,7 @@ class ConfirmationScreen extends StatelessWidget {
                   text: 'Resent Code',
                   backgroundColor: Colors.white,
                   foregroundColor: Colors.black,
-                  onTap: () {}),
+                  onTap: () {}),  // Logic for resending the OTP can be added here
             ),
           ],
         ),

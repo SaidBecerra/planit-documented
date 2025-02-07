@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:planit/widgets/main_button.dart';
@@ -5,8 +7,10 @@ import 'package:planit/widgets/scaffold_layout.dart';
 import 'package:planit/widgets/trip/timeslot.dart';
 import 'package:planit/widgets/trip/trip_list_screen.dart';
 
+// Defines the possible types of activities that can be scheduled
 enum ActivityType { food, activity }
 
+// Represents an individual activity with its properties
 class Activity {
   final String name;
   final ActivityType type;
@@ -16,6 +20,7 @@ class Activity {
     required this.type,
   });
 
+  // Converts Activity object to a map for Firestore storage
   Map<String, dynamic> toMap() {
     return {
       'name': name,
@@ -23,6 +28,7 @@ class Activity {
     };
   }
 
+  // Creates an Activity object from a Firestore map
   factory Activity.fromMap(Map<String, dynamic> map) {
     return Activity(
       name: map['name'],
@@ -31,12 +37,15 @@ class Activity {
     );
   }
 
+  // Gets the appropriate icon based on activity type
   IconData get icon =>
       type == ActivityType.food ? Icons.restaurant : Icons.local_activity;
 
+  // Gets the appropriate color based on activity type
   Color get color => type == ActivityType.food ? Colors.orange : Colors.blue;
 }
 
+// Represents a scheduled activity with its position in the timeline
 class TimeSlotData {
   int position;
   Activity activity;
@@ -46,6 +55,7 @@ class TimeSlotData {
     required this.activity,
   });
 
+  // Converts TimeSlotData object to a map for Firestore storage
   Map<String, dynamic> toMap() {
     return {
       'position': position,
@@ -53,6 +63,7 @@ class TimeSlotData {
     };
   }
 
+  // Creates a TimeSlotData object from a Firestore map
   factory TimeSlotData.fromMap(Map<String, dynamic> map) {
     return TimeSlotData(
       position: map['position'],
@@ -61,6 +72,7 @@ class TimeSlotData {
   }
 }
 
+// Main screen widget for creating and editing trip blueprints
 class BluePrintScreen extends StatefulWidget {
   const BluePrintScreen({
     required this.tripId,
@@ -74,9 +86,10 @@ class BluePrintScreen extends StatefulWidget {
 }
 
 class _BluePrintScreenState extends State<BluePrintScreen> {
-  final List<TimeSlotData> slots = [];
-  bool _isDragging = false;
+  final List<TimeSlotData> slots = []; // Stores all scheduled time slots
+  bool _isDragging = false; // Tracks if a time slot is being dragged
 
+  // Predefined activity types available for selection
   final List<Activity> timeslotTypes = [
     const Activity(
       name: 'Food',
@@ -88,26 +101,32 @@ class _BluePrintScreenState extends State<BluePrintScreen> {
     ),
   ];
 
+  // Generates a list of time slots for 24 hours
   List<String> get timeSlots => List.generate(24, (i) {
         return '${i.toString().padLeft(2, '0')}:00';
       });
 
+  // Gets the time range string for a given index
   String _getTimeRange(int index) => index < timeSlots.length - 1
       ? '${timeSlots[index]} - ${timeSlots[index + 1]}'
       : '${timeSlots[index]} - 00:00';
 
+  // Updates the position of a dragged time slot
   void _handleDrop(int newPosition, TimeSlotData slot) {
     setState(() => slot.position = newPosition);
   }
 
+  // Removes a time slot from the schedule
   void _deleteSlot(TimeSlotData slot) {
     setState(() => slots.remove(slot));
   }
 
+  // Updates the dragging state
   void _setDragging(bool isDragging) {
     setState(() => _isDragging = isDragging);
   }
 
+  // Shows bottom sheet for selecting activity type
   Future<void> _showTimeslotPicker() async {
     final activity = await showModalBottomSheet<Activity>(
       context: context,
@@ -157,6 +176,7 @@ class _BluePrintScreenState extends State<BluePrintScreen> {
       },
     );
 
+    // Add new time slot if activity was selected
     if (activity != null) {
       setState(() {
         final availablePosition = List.generate(timeSlots.length, (i) => i)
@@ -169,6 +189,7 @@ class _BluePrintScreenState extends State<BluePrintScreen> {
     }
   }
 
+  // Saves blueprint to Firestore and navigates to trip list screen
   Future<void> _onTripList() async {
     try {
       if (slots.isNotEmpty) {
@@ -205,6 +226,7 @@ class _BluePrintScreenState extends State<BluePrintScreen> {
     return ScaffoldLayout(
       body: Column(
         children: [
+          // Main time slot list with drag and drop functionality
           Expanded(
             child: Stack(
               children: [
@@ -222,6 +244,7 @@ class _BluePrintScreenState extends State<BluePrintScreen> {
                     onDragEnded: () => _setDragging(false),
                   ),
                 ),
+                // Delete target that appears when dragging
                 if (_isDragging)
                   Positioned(
                     bottom: 40,
@@ -253,6 +276,7 @@ class _BluePrintScreenState extends State<BluePrintScreen> {
               ],
             ),
           ),
+          // Bottom buttons for adding slots and navigation
           Padding(
             padding: const EdgeInsets.all(20),
             child: Row(
@@ -283,6 +307,7 @@ class _BluePrintScreenState extends State<BluePrintScreen> {
   }
 }
 
+// Widget for displaying and handling drag/drop of individual time slots
 class TimeSlotPosition extends StatelessWidget {
   final int index;
   final String timeSlot;
@@ -311,6 +336,7 @@ class TimeSlotPosition extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
+          // Time slot label
           Text(
             timeSlot,
             style: const TextStyle(
@@ -319,6 +345,7 @@ class TimeSlotPosition extends StatelessWidget {
               fontWeight: FontWeight.w500,
             ),
           ),
+          // Draggable time slots
           ...occupyingSlots.map((slot) => Draggable<TimeSlotData>(
                 data: slot,
                 onDragStarted: onDragStarted,
@@ -344,6 +371,7 @@ class TimeSlotPosition extends StatelessWidget {
                   color: slot.activity.color,
                 ),
               )),
+          // Drop indicator
           if (candidateData.isNotEmpty)
             Container(
               width: double.infinity,
@@ -351,6 +379,7 @@ class TimeSlotPosition extends StatelessWidget {
               margin: const EdgeInsets.symmetric(vertical: 8),
               color: Colors.blue,
             ),
+          // Spacing for empty slots
           if (candidateData.isEmpty && occupyingSlots.isEmpty)
             const SizedBox(height: 16),
         ],

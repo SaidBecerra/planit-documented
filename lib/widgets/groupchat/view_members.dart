@@ -5,7 +5,7 @@ import 'package:planit/widgets/scaffold_layout.dart';
 import 'package:planit/widgets/main_button.dart';
 
 class ViewMembersScreen extends StatefulWidget {
-  final String groupchatID;
+  final String groupchatID; // Group chat ID passed from the previous screen
   const ViewMembersScreen({required this.groupchatID, super.key});
 
   @override
@@ -13,17 +13,19 @@ class ViewMembersScreen extends StatefulWidget {
 }
 
 class ViewMembersScreenState extends State<ViewMembersScreen> {
-  List<Map<String, dynamic>> _members = [];
-  bool _isLoading = true;
+  List<Map<String, dynamic>> _members = []; // List to store members' details
+  bool _isLoading = true;  // Flag to indicate whether data is being loaded
 
   @override
   void initState() {
     super.initState();
-    _fetchMembers();
+    _fetchMembers(); // Fetch group members when the screen is initialized
   }
-
+  
+   // Fetch group chat members from Firestore
   Future<void> _fetchMembers() async {
     try {
+      // Retrieve the group chat document from Firestore
       final groupChatDoc = await FirebaseFirestore.instance
           .collection('groupchats')
           .doc(widget.groupchatID)
@@ -32,7 +34,9 @@ class ViewMembersScreenState extends State<ViewMembersScreen> {
       if (groupChatDoc.exists) {
         final groupData = groupChatDoc.data();
         if (groupData != null) {
+          // Get the list of member IDs from the group chat document
           final memberIDs = groupData['members'] as List<dynamic>;
+          // Fetch details for each member asynchronously
           final memberDetails = await Future.wait(memberIDs.map((id) async {
             final userDoc = await FirebaseFirestore.instance
                 .collection('users')
@@ -44,10 +48,11 @@ class ViewMembersScreenState extends State<ViewMembersScreen> {
                 'imageURL': userDoc['imageURL'] ?? '',
               };
             }
-            return null;
+            return null; // Return null if user data is not found
           }).toList());
 
           setState(() {
+             // Filter out null values and update the members list
             _members = memberDetails.whereType<Map<String, dynamic>>().toList();
             _isLoading = false;
           });
@@ -56,16 +61,17 @@ class ViewMembersScreenState extends State<ViewMembersScreen> {
         setState(() {
           _isLoading = false;
         });
-        _showErrorSnackbar('Group chat not found!');
+        _showErrorSnackbar('Group chat not found!'); // Show an error if the group chat doesn't exist
       }
     } catch (e) {
       setState(() {
         _isLoading = false;
       });
-      _showErrorSnackbar('Error fetching members: $e');
+      _showErrorSnackbar('Error fetching members: $e'); // Handle any exceptions during the fetch process
     }
   }
 
+   // Show an error message using a SnackBar
   void _showErrorSnackbar(String message) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
@@ -85,6 +91,7 @@ class ViewMembersScreenState extends State<ViewMembersScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            // Display the header text
             Padding(
               padding: const EdgeInsets.only(top: 16, bottom: 8),
               child: Text(
@@ -94,6 +101,7 @@ class ViewMembersScreenState extends State<ViewMembersScreen> {
                     ),
               ),
             ),
+            // Show the number of members
             Text(
               '${_members.length} members',
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
@@ -101,10 +109,12 @@ class ViewMembersScreenState extends State<ViewMembersScreen> {
                   ),
             ),
             const SizedBox(height: 16),
+             // Build the list of members or show a loading indicator
             Expanded(
               child: _buildMembersList(),
             ),
             const SizedBox(height: 16),
+            // Button to navigate to InviteCodeScreen for sharing the group chat ID
             Padding(
               padding: const EdgeInsets.only(bottom: 30),
               child: MainButton(
@@ -130,14 +140,17 @@ class ViewMembersScreenState extends State<ViewMembersScreen> {
     );
   }
 
+  // Build the list of members or show an appropriate message if there are no members
   Widget _buildMembersList() {
     if (_isLoading) {
+      // Show a loading indicator while data is being fetched
       return const Center(
         child: CircularProgressIndicator(),
       );
     }
 
     if (_members.isEmpty) {
+      // Show a message if no members are found
       return Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -160,6 +173,7 @@ class ViewMembersScreenState extends State<ViewMembersScreen> {
       );
     }
 
+    // Build a ListView to display each member's details
     return ListView.separated(
       padding: const EdgeInsets.symmetric(vertical: 8),
       itemCount: _members.length,

@@ -14,8 +14,13 @@ import 'package:planit/widgets/terms_text.dart';
 import 'package:planit/widgets/title_text.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
+/// Firebase Authentication instance used for signing in users.
 final _firebase = FirebaseAuth.instance;
 
+/// A screen that allows existing users to log in to their account.
+///
+/// The screen provides input fields for email and password, and buttons
+/// to log in, navigate to registration, or sign in using Google.
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
 
@@ -26,15 +31,22 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  // Variables to store the user's entered email and password.
   var _enteredEmail = '';
   var _enteredPassword = '';
+
+  // A GlobalKey to uniquely identify the form and enable form validation.
   final _form = GlobalKey<FormState>();
 
+  /// Navigates to the RegistrationScreen when the user opts to register.
   void _onRegister(BuildContext context) {
-    Navigator.push(context,
-        MaterialPageRoute(builder: (ctx) => const RegistrationScreen()));
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (ctx) => const RegistrationScreen()),
+    );
   }
 
+  /// Navigates to the home screen by replacing the current navigation stack.
   void _onHome(BuildContext context) {
     Navigator.pushAndRemoveUntil(
       context,
@@ -45,6 +57,9 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
+  /// Validates the email input field.
+  ///
+  /// Returns an error message if the email is empty or doesn't match a valid format.
   String? emailValidator(String? value) {
     if (value == null || value.isEmpty) {
       return 'Email cannot be empty';
@@ -56,6 +71,9 @@ class _LoginScreenState extends State<LoginScreen> {
     return null;
   }
 
+  /// Validates the password input field.
+  ///
+  /// Returns an error message if the password is empty or less than 6 characters.
   String? passwordValidator(String? value) {
     if (value == null || value.isEmpty) {
       return 'Password cannot be empty';
@@ -66,6 +84,10 @@ class _LoginScreenState extends State<LoginScreen> {
     return null;
   }
 
+  /// Attempts to log in the user using Firebase Authentication.
+  ///
+  /// Validates the form, saves the input values, and signs in with the provided credentials.
+  /// On success, navigates to the home screen; on failure, displays an error message.
   void login() async {
     final isValid = _form.currentState!.validate();
 
@@ -74,10 +96,12 @@ class _LoginScreenState extends State<LoginScreen> {
     }
     _form.currentState!.save();
     try {
+      // ignore: unused_local_variable
       final userCredential = await _firebase.signInWithEmailAndPassword(
           email: _enteredEmail, password: _enteredPassword);
       _onHome(context);
     } on FirebaseAuthException catch (error) {
+      // Clear any existing SnackBars before showing a new error message.
       ScaffoldMessenger.of(context).clearSnackBars();
       ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text(error.message ?? 'Authentication failed')));
@@ -87,7 +111,9 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return ScaffoldLayout(
+      // Custom scaffold layout for consistent app design.
       body: SingleChildScrollView(
+        // Allows the content to be scrollable, especially on smaller screens.
         child: Form(
           key: _form,
           child: Padding(
@@ -95,10 +121,12 @@ class _LoginScreenState extends State<LoginScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                // Title text for the login screen.
                 const TitleText(text: 'Let\'s log into your account!'),
                 const SizedBox(
                   height: 6,
                 ),
+                // Instructional text for the user.
                 const NormalText(
                   text: 'Log into your account by filling in the data below',
                   alignment: TextAlign.start,
@@ -106,6 +134,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 const SizedBox(
                   height: 30,
                 ),
+                // Email input field.
                 InputField(
                   validator: emailValidator,
                   label: 'Email',
@@ -118,10 +147,12 @@ class _LoginScreenState extends State<LoginScreen> {
                 const SizedBox(
                   height: 15,
                 ),
+                // Label for the password field.
                 const LabelText(text: 'Password'),
                 const SizedBox(
                   height: 5,
                 ),
+                // Password input field.
                 PasswordField(
                   validator: passwordValidator,
                   onSaved: (value) {
@@ -131,19 +162,21 @@ class _LoginScreenState extends State<LoginScreen> {
                 const SizedBox(
                   height: 30,
                 ),
+                // Login button.
                 SizedBox(
                   width: double.infinity,
                   height: 55,
                   child: MainButton(
-                      text: 'Log in',
-                      backgroundColor: Colors.black,
-                      foregroundColor: Colors.white,
-                      onTap: login
+                    text: 'Log in',
+                    backgroundColor: Colors.black,
+                    foregroundColor: Colors.white,
+                    onTap: login,
                   ),
                 ),
                 const SizedBox(
                   height: 10,
                 ),
+                // Row with a prompt to register for users who don't have an account.
                 Center(
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.center,
@@ -169,6 +202,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                 ),
                 const SizedBox(height: 10),
+                // Text indicating an alternative login method.
                 const Center(
                   child: NormalText(
                     text: 'Or log in with',
@@ -176,6 +210,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                 ),
                 const SizedBox(height: 15),
+                // Button for logging in with Google (currently no action defined).
                 MainButton(
                   text: 'Continue with Google',
                   backgroundColor: Colors.white,
@@ -187,6 +222,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   onTap: () {},
                 ),
                 const SizedBox(height: 40),
+                // Display the terms and conditions text.
                 const Padding(
                   padding: EdgeInsets.only(bottom: 20),
                   child: Center(

@@ -6,6 +6,7 @@ import 'package:planit/widgets/scaffold_layout.dart';
 import 'package:planit/widgets/title_text.dart';
 import 'package:planit/widgets/input_field.dart';
 
+/// A screen for users to join an existing group chat by entering its group chat ID.
 class JoinGroupchatScreen extends StatefulWidget {
   const JoinGroupchatScreen({super.key});
 
@@ -19,6 +20,7 @@ class JoinGroupchatScreenState extends State<JoinGroupchatScreen> {
   final _form = GlobalKey<FormState>();
   var _groupchatID = '';
 
+    /// Validates the group chat ID input field.
   String? groupchatNameValidator(String? value) {
     if (value == null || value.trim().isEmpty) {
       return 'Name cannot be empty';
@@ -26,6 +28,7 @@ class JoinGroupchatScreenState extends State<JoinGroupchatScreen> {
     return null;
   }
 
+  /// Handles the logic to join the group chat by updating the Firestore document.
   void _onJoin() async {
     final isValid = _form.currentState!.validate();
 
@@ -55,6 +58,7 @@ class JoinGroupchatScreenState extends State<JoinGroupchatScreen> {
         return;
       }
 
+      // Add the user to the group chat's members list.
       await groupchatDoc.update({
         'members': FieldValue.arrayUnion([currentUser.uid])
       });
@@ -63,6 +67,7 @@ class JoinGroupchatScreenState extends State<JoinGroupchatScreen> {
         const SnackBar(content: Text('Successfully joined the group chat!')),
       );
 
+      // Navigate back to the previous screen
       Navigator.pop(context);
     } on FirebaseAuthException catch (error) {
       ScaffoldMessenger.of(context).clearSnackBars();

@@ -1,6 +1,10 @@
+// Disable specific linting rules for this file
+// ignore_for_file: non_constant_identifier_names, unused_field, avoid_print, deprecated_member_use
+
 import 'dart:convert';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+// Import custom widgets and utilities
 import 'package:planit/widgets/main_button.dart';
 import 'package:planit/widgets/scaffold_layout.dart';
 import 'package:planit/widgets/normal_text.dart';
@@ -13,35 +17,40 @@ import 'package:planit/widgets/trip/network_utility.dart';
 import 'package:planit/widgets/trip/place_autocomplete_response.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+// Main screen widget for creating a new trip
 class CreateTripScreen extends StatefulWidget {
   const CreateTripScreen({required this.groupchat_id, super.key});
 
-  final String groupchat_id;
+  final String groupchat_id; // ID of the group chat this trip belongs to
 
   @override
   State<CreateTripScreen> createState() => _CreateTripScreenState();
 }
 
 class _CreateTripScreenState extends State<CreateTripScreen> {
-  final _form = GlobalKey<FormState>();
-  static const String _apiKey = 'AIzaSyCPT_9MfN37x1XCG-mzbBQTgPgxqgPsmD8';
+  final _form = GlobalKey<FormState>(); // Key for form validation
+  static const String _apiKey = 'AIzaSyCPT_9MfN37x1XCG-mzbBQTgPgxqgPsmD8'; // Google Maps API key
 
+  // Controllers for text input and scrolling
   final TextEditingController _locationController = TextEditingController();
   final TextEditingController _radiusController = TextEditingController();
   final ScrollController _scrollController = ScrollController();
 
+  // State variables for location predictions and form data
   List<AutocompletePrediction> _placePredictions = [];
   String _name = '';
   String _location = '';
-  double _radius = 5.0; // Default to minimum value
+  double _radius = 5.0; // Default radius in kilometers
   bool _isLoading = false;
   String? _error;
 
+  // Final form values to be saved
   String _finalName = '';
   String _finalLocation = '';
   double? _finalLatitude;
   double? _finalLongitude;
 
+  // Clean up controllers when widget is disposed
   @override
   void dispose() {
     _locationController.dispose();
@@ -50,6 +59,7 @@ class _CreateTripScreenState extends State<CreateTripScreen> {
     super.dispose();
   }
 
+  // Fetches place predictions from Google Places API based on user input
   Future<void> _placeAutocomplete(String query) async {
     if (query.isEmpty) {
       setState(() {
@@ -65,6 +75,7 @@ class _CreateTripScreenState extends State<CreateTripScreen> {
     });
 
     try {
+      // Construct API request URL
       final uri = Uri.https(
         'maps.googleapis.com',
         'maps/api/place/autocomplete/json',
@@ -77,8 +88,7 @@ class _CreateTripScreenState extends State<CreateTripScreen> {
       final response = await NetworkUtility.fetchUrl(uri);
 
       if (response != null) {
-        final result =
-            PlaceAutocompleteResponse.parseAutocompleteResult(response);
+        final result = PlaceAutocompleteResponse.parseAutocompleteResult(response);
         setState(() {
           _placePredictions = result.predictions ?? [];
         });
@@ -95,6 +105,7 @@ class _CreateTripScreenState extends State<CreateTripScreen> {
     }
   }
 
+  // Fetches detailed place information including coordinates
   Future<void> _getPlaceDetails(String? placeId) async {
     if (placeId == null) {
       print('PlaceId is null');
@@ -107,6 +118,7 @@ class _CreateTripScreenState extends State<CreateTripScreen> {
     });
 
     try {
+      // Request place details from Google Places API
       final uri = Uri.https(
         'maps.googleapis.com',
         'maps/api/place/details/json',
@@ -124,6 +136,7 @@ class _CreateTripScreenState extends State<CreateTripScreen> {
         final Map<String, dynamic> json = jsonDecode(response);
         print('Place Details Response: $json');
 
+        // Extract coordinates from response
         if (json['result'] != null &&
             json['result']['geometry'] != null &&
             json['result']['geometry']['location'] != null) {
@@ -156,6 +169,7 @@ class _CreateTripScreenState extends State<CreateTripScreen> {
     }
   }
 
+  // Handles location selection from autocomplete suggestions
   void _onLocationSelected(String location, String? placeId) {
     setState(() {
       _location = location;
@@ -167,27 +181,26 @@ class _CreateTripScreenState extends State<CreateTripScreen> {
     }
   }
 
+  // Creates new trip in Firestore and navigates to BluePrint screen
   void _onBluePrint() async {
     if (_form.currentState!.validate()) {
       _form.currentState!.save();
 
-      print(
-          'Latitude: $_finalLatitude, Longitude: $_finalLongitude, Radius: $_radius');
+      print('Latitude: $_finalLatitude, Longitude: $_finalLongitude, Radius: $_radius');
 
       if (_finalLatitude == null || _finalLongitude == null) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-            content: Text(
-                'Location coordinates not found. Please try selecting the location again.'),
+            content: Text('Location coordinates not found. Please try selecting the location again.'),
           ),
         );
         return;
       }
 
       try {
+        // Create new trip document in Firestore
         final currentUser = FirebaseAuth.instance.currentUser;
-        final docRef =
-            await FirebaseFirestore.instance.collection('trips').add({
+        final docRef = await FirebaseFirestore.instance.collection('trips').add({
           'name': _finalName,
           'location': _finalLocation,
           'latitude': _finalLatitude,
@@ -201,6 +214,7 @@ class _CreateTripScreenState extends State<CreateTripScreen> {
 
         print('Created document with ID: ${docRef.id}');
 
+        // Update groupchat document with new trip ID
         final groupchatDoc = FirebaseFirestore.instance
             .collection('groupchats')
             .doc(widget.groupchat_id);
@@ -219,6 +233,7 @@ class _CreateTripScreenState extends State<CreateTripScreen> {
           'trips': FieldValue.arrayUnion([docRef.id])
         });
 
+        // Navigate to BluePrint screen
         Navigator.push(
           context,
           MaterialPageRoute(
@@ -235,6 +250,7 @@ class _CreateTripScreenState extends State<CreateTripScreen> {
     }
   }
 
+  // Form validation functions
   String? nameValidator(String? value) {
     if (value == null || value.trim().isEmpty) {
       return 'Name cannot be empty';
@@ -259,12 +275,14 @@ class _CreateTripScreenState extends State<CreateTripScreen> {
     return null;
   }
 
+  // Build UI for trip creation screen
   @override
   Widget build(BuildContext context) {
     return ScaffoldLayout(
       body: SafeArea(
         child: Stack(
           children: [
+            // Main scrollable content
             Positioned.fill(
               bottom: 100,
               child: SingleChildScrollView(
@@ -280,11 +298,11 @@ class _CreateTripScreenState extends State<CreateTripScreen> {
                         const TitleText(text: 'Let\'s create your trip!'),
                         const SizedBox(height: 6),
                         const NormalText(
-                          text:
-                              'Create your trip by filling in the necessary data below',
+                          text: 'Create your trip by filling in the necessary data below',
                           alignment: TextAlign.start,
                         ),
                         const SizedBox(height: 30),
+                        // Name input field
                         InputField(
                           label: 'Name',
                           hint: 'Ex: Friday Night Trip',
@@ -296,6 +314,7 @@ class _CreateTripScreenState extends State<CreateTripScreen> {
                           },
                         ),
                         const SizedBox(height: 30),
+                        // Radius slider
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -318,7 +337,7 @@ class _CreateTripScreenState extends State<CreateTripScreen> {
                                 value: _radius,
                                 min: 5,
                                 max: 100,
-                                divisions: 90, // This makes each step 1km
+                                divisions: 90, // Makes each step 1km
                                 onChanged: (value) {
                                   setState(() {
                                     _radius = value;
@@ -330,6 +349,7 @@ class _CreateTripScreenState extends State<CreateTripScreen> {
                             const SizedBox(height: 30),
                           ],
                         ),
+                        // Location input field with autocomplete
                         InputField(
                           label: 'Location',
                           hint: 'Search your location',
@@ -341,11 +361,13 @@ class _CreateTripScreenState extends State<CreateTripScreen> {
                             _finalLocation = value!;
                           },
                         ),
+                        // Loading indicator
                         if (_isLoading)
                           const Padding(
                             padding: EdgeInsets.all(8.0),
                             child: Center(child: CircularProgressIndicator()),
                           ),
+                        // Error message
                         if (_error != null)
                           Padding(
                             padding: const EdgeInsets.all(8.0),
@@ -354,6 +376,7 @@ class _CreateTripScreenState extends State<CreateTripScreen> {
                               style: const TextStyle(color: Colors.red),
                             ),
                           ),
+                        // Location suggestions list
                         if (_placePredictions.isNotEmpty)
                           ListView.builder(
                             physics: const NeverScrollableScrollPhysics(),
@@ -362,8 +385,7 @@ class _CreateTripScreenState extends State<CreateTripScreen> {
                             itemBuilder: (context, index) {
                               final prediction = _placePredictions[index];
                               return LocationListTile(
-                                location: prediction.description ??
-                                    'Unknown location',
+                                location: prediction.description ?? 'Unknown location',
                                 press: () => _onLocationSelected(
                                   prediction.description ?? '',
                                   prediction.placeId,
@@ -378,6 +400,7 @@ class _CreateTripScreenState extends State<CreateTripScreen> {
                 ),
               ),
             ),
+            // Bottom button container
             Positioned(
               left: 0,
               right: 0,
